@@ -5,17 +5,22 @@
  */
 package pkmastermind;
 
+import java.util.Random;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author Ignacio
  */
 public class VentanaMasterMind extends javax.swing.JFrame {
 
-    /**
-     * Creates new form VentanaMasterMind
-     */
+    String tipoObjeto = "Color";
+    int numObjetos = 6;
+    int numFilas = 3;
+    
     public VentanaMasterMind() {
         initComponents();
+        actualizaSelector();
     }
 
     /**
@@ -27,22 +32,547 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPOpciones = new javax.swing.JPanel();
+        jChkNivAuto = new javax.swing.JCheckBox();
+        jCBFilas = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jPTipoElementos = new javax.swing.JPanel();
+        jBNumeros = new javax.swing.JButton();
+        jBLetras = new javax.swing.JButton();
+        jBIconos = new javax.swing.JButton();
+        jBColores = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jCBObjetos = new javax.swing.JComboBox();
+        jBNuevaPartida = new javax.swing.JButton();
+        jPSelectColor = new javax.swing.JPanel();
+        jBSelector1 = new javax.swing.JButton();
+        jBSelector2 = new javax.swing.JButton();
+        jBSelector3 = new javax.swing.JButton();
+        jBSelector4 = new javax.swing.JButton();
+        jBSelector5 = new javax.swing.JButton();
+        jBSelector6 = new javax.swing.JButton();
+        jBSelector7 = new javax.swing.JButton();
+        jBSelector8 = new javax.swing.JButton();
+        jBSelector9 = new javax.swing.JButton();
+        jBSelector10 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPOpciones.setBorder(javax.swing.BorderFactory.createTitledBorder("Opciones"));
+
+        jChkNivAuto.setSelected(true);
+        jChkNivAuto.setText("Nivel Automático");
+        jChkNivAuto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jChkNivAutoActionPerformed(evt);
+            }
+        });
+
+        jCBFilas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "3", "4", "5", "6", "7", "8" }));
+        jCBFilas.setEnabled(false);
+
+        jLabel2.setText("Num. Filas:");
+
+        jCheckBox1.setText("Permitir Duplicados");
+
+        jPTipoElementos.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Seleccione Tipo de Elementos"));
+
+        jBNumeros.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBNumeros.setText("0");
+        jBNumeros.setBorder(null);
+        jBNumeros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBNumerosActionPerformed(evt);
+            }
+        });
+
+        jBLetras.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBLetras.setText("A");
+        jBLetras.setBorder(null);
+        jBLetras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBLetrasActionPerformed(evt);
+            }
+        });
+
+        jBIconos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cat_1.png"))); // NOI18N
+        jBIconos.setBorder(null);
+        jBIconos.setOpaque(true);
+        jBIconos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBIconosActionPerformed(evt);
+            }
+        });
+
+        jBColores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_1.png"))); // NOI18N
+        jBColores.setBorder(null);
+        jBColores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBColoresActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPTipoElementosLayout = new javax.swing.GroupLayout(jPTipoElementos);
+        jPTipoElementos.setLayout(jPTipoElementosLayout);
+        jPTipoElementosLayout.setHorizontalGroup(
+            jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPTipoElementosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jBColores, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPTipoElementosLayout.setVerticalGroup(
+            jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPTipoElementosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jBColores, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel3.setText("Num. Objetos");
+
+        jCBObjetos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "6", "7", "8", "9", "10" }));
+        jCBObjetos.setEnabled(false);
+        jCBObjetos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBObjetosActionPerformed(evt);
+            }
+        });
+
+        jBNuevaPartida.setText("Nueva Partida");
+
+        javax.swing.GroupLayout jPOpcionesLayout = new javax.swing.GroupLayout(jPOpciones);
+        jPOpciones.setLayout(jPOpcionesLayout);
+        jPOpcionesLayout.setHorizontalGroup(
+            jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPOpcionesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPOpcionesLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCBFilas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCBObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jBNuevaPartida))
+                    .addGroup(jPOpcionesLayout.createSequentialGroup()
+                        .addComponent(jChkNivAuto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBox1))
+                    .addComponent(jPTipoElementos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPOpcionesLayout.setVerticalGroup(
+            jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPOpcionesLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jChkNivAuto)
+                    .addComponent(jCheckBox1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jCBFilas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jCBObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBNuevaPartida))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPTipoElementos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPSelectColor.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jBSelector1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_1.png"))); // NOI18N
+        jBSelector1.setBorder(null);
+        jBSelector1.setOpaque(true);
+        jBSelector1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector1ActionPerformed(evt);
+            }
+        });
+
+        jBSelector2.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_2.png"))); // NOI18N
+        jBSelector2.setBorder(null);
+        jBSelector2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector2ActionPerformed(evt);
+            }
+        });
+
+        jBSelector3.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_3.png"))); // NOI18N
+        jBSelector3.setBorder(null);
+        jBSelector3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector3ActionPerformed(evt);
+            }
+        });
+
+        jBSelector4.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_4.png"))); // NOI18N
+        jBSelector4.setBorder(null);
+        jBSelector4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector4ActionPerformed(evt);
+            }
+        });
+
+        jBSelector5.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_5.png"))); // NOI18N
+        jBSelector5.setBorder(null);
+        jBSelector5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector5ActionPerformed(evt);
+            }
+        });
+
+        jBSelector6.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_6.png"))); // NOI18N
+        jBSelector6.setBorder(null);
+        jBSelector6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector6ActionPerformed(evt);
+            }
+        });
+
+        jBSelector7.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_7.png"))); // NOI18N
+        jBSelector7.setBorder(null);
+        jBSelector7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector7ActionPerformed(evt);
+            }
+        });
+
+        jBSelector8.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_8.png"))); // NOI18N
+        jBSelector8.setBorder(null);
+        jBSelector8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector8ActionPerformed(evt);
+            }
+        });
+
+        jBSelector9.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_9.png"))); // NOI18N
+        jBSelector9.setBorder(null);
+        jBSelector9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector9ActionPerformed(evt);
+            }
+        });
+
+        jBSelector10.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_10.png"))); // NOI18N
+        jBSelector10.setBorder(null);
+        jBSelector10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBSelector10ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPSelectColorLayout = new javax.swing.GroupLayout(jPSelectColor);
+        jPSelectColor.setLayout(jPSelectColorLayout);
+        jPSelectColorLayout.setHorizontalGroup(
+            jPSelectColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPSelectColorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jBSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBSelector10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPSelectColorLayout.setVerticalGroup(
+            jPSelectColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPSelectColorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPSelectColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jBSelector10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPSelectColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 435, Short.MAX_VALUE)
+                .addComponent(jPSelectColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jChkNivAutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jChkNivAutoActionPerformed
+        
+        //Si ponemos el Nivel Automático Desactivamos el ComboBox
+        if (jChkNivAuto.isSelected()) {
+            jCBFilas.setEnabled(false);
+            jCBObjetos.setEnabled(false);
+        } else {
+            jCBFilas.setEnabled(true);
+            jCBObjetos.setEnabled(true);
+        }
+    }//GEN-LAST:event_jChkNivAutoActionPerformed
+
+    private void actualizaSelector(){
+        
+        //Obtenemos el Numero de Objetos Seleccionados
+        numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
+        numFilas   = Integer.valueOf(jCBFilas.getSelectedItem().toString());
+        
+        //Iniciamos Botones Por Defecto
+        jBSelector7.setVisible(false);
+        jBSelector8.setVisible(false);
+        jBSelector9.setVisible(false);
+        jBSelector10.setVisible(false);
+        
+        //No ponemos break para que siga ejecutando lo de abajo
+        switch (numObjetos){
+            case 10:
+                jBSelector10.setVisible(true);
+            case 9:
+                jBSelector9.setVisible(true);
+            case 8:
+                jBSelector8.setVisible(true);
+            case 7:
+                jBSelector7.setVisible(true);
+            default:
+                break;
+        }
+
+
+    }
+    
+    private void jBColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBColoresActionPerformed
+        
+        //Establecemos los Colores como Tipo de Objeto
+        tipoObjeto = "Color";
+        
+        //Limpiamos los botones
+        limpiarBotones();
+        
+        jBSelector1.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_1.png")));
+        jBSelector2.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_2.png")));
+        jBSelector3.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_3.png")));
+        jBSelector4.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_4.png")));
+        jBSelector5.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_5.png")));
+        jBSelector6.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_6.png")));
+        jBSelector7.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_7.png")));
+        jBSelector8.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_8.png")));
+        jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_9.png")));
+        jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_10.png")));
+        
+    }//GEN-LAST:event_jBColoresActionPerformed
+
+
+    
+
+    
+    private void jBIconosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIconosActionPerformed
+        
+        //Establecemos los Iconos como Tipo de Objeto
+        tipoObjeto = "Icono";
+        
+        //Limpiamos los botones
+        limpiarBotones();
+        
+        jBSelector1.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_1.png")));
+        jBSelector2.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_2.png")));
+        jBSelector3.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_3.png")));
+        jBSelector4.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_4.png")));
+        jBSelector5.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_5.png")));
+        jBSelector6.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_6.png")));
+        jBSelector7.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_7.png")));
+        jBSelector8.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_8.png")));
+        jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_9.png")));
+        jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_10.png")));
+    }//GEN-LAST:event_jBIconosActionPerformed
+    //jBSelector1.setIcon(getImageIcon("../Imagenes/color_2.png"));
+    private ImageIcon getImageIcon(String nombreImagen){
+        
+        ImageIcon imagen = new ImageIcon(nombreImagen);
+        return imagen;
+    }
+    
+    
+    private void jBLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLetrasActionPerformed
+        
+        //Establecemos las Letras como Tipo de Objeto
+        tipoObjeto = "Letra";
+        
+        //Limpiamos los botones
+        limpiarBotones();
+        
+        jBSelector1.setText("A");
+        jBSelector2.setText("B");
+        jBSelector3.setText("C");
+        jBSelector4.setText("D");
+        jBSelector5.setText("E");
+        jBSelector6.setText("F");
+        jBSelector7.setText("G");
+        jBSelector8.setText("H");
+        jBSelector9.setText("I");
+        jBSelector10.setText("J");
+    }//GEN-LAST:event_jBLetrasActionPerformed
+
+    private void jBNumerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNumerosActionPerformed
+        
+        //Establecemos los Numeros como Tipo de Objeto
+        tipoObjeto = "Numero";
+        
+        //Limpiamos los botones
+        limpiarBotones();
+        
+        jBSelector1.setText("0");
+        jBSelector2.setText("1");
+        jBSelector3.setText("2");
+        jBSelector4.setText("3");
+        jBSelector5.setText("4");
+        jBSelector6.setText("5");
+        jBSelector7.setText("6");
+        jBSelector8.setText("7");
+        jBSelector9.setText("8");
+        jBSelector10.setText("9");
+    }//GEN-LAST:event_jBNumerosActionPerformed
+
+    private void limpiarBotones(){
+        jBSelector1.setIcon(null);
+        jBSelector1.setText("");
+        jBSelector2.setIcon(null);
+        jBSelector2.setText("");
+        jBSelector3.setIcon(null);
+        jBSelector3.setText("");
+        jBSelector4.setIcon(null);
+        jBSelector4.setText("");
+        jBSelector5.setIcon(null);
+        jBSelector5.setText("");
+        jBSelector6.setIcon(null);
+        jBSelector6.setText("");
+        jBSelector7.setIcon(null);
+        jBSelector7.setText("");
+        jBSelector8.setIcon(null);
+        jBSelector8.setText("");
+        jBSelector9.setIcon(null);
+        jBSelector9.setText("");
+        jBSelector10.setIcon(null);
+        jBSelector10.setText("");
+    }
+    
+    private void jBSelector1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector1ActionPerformed
+
+    private void jBSelector2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector2ActionPerformed
+
+    private void jBSelector3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector3ActionPerformed
+
+    private void jBSelector4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector4ActionPerformed
+
+    private void jBSelector5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector5ActionPerformed
+
+    private void jBSelector6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector6ActionPerformed
+
+    private void jBSelector7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector7ActionPerformed
+
+    private void jBSelector8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector8ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector8ActionPerformed
+
+    private void jBSelector9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector9ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector9ActionPerformed
+
+    private void jBSelector10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector10ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBSelector10ActionPerformed
+
+    private void jCBObjetosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBObjetosActionPerformed
+        
+        //Actualizamos los Selectores
+        actualizaSelector();
+    }//GEN-LAST:event_jCBObjetosActionPerformed
+
+    private void generaNuevaPartida()
+    {
+        //Generamos la Temperatura Aleatoria Inicial
+        Random generadorNum = new Random();
+        //int tempActual = generadorNum.nextInt(TEMP_MAX_INI + 1) + TEMP_MIN_INI;
+        
+        //
+        //jBColores.setOpaque(false);
+        //jBColores.setContentAreaFilled(false);
+        //jBColores.setBorderPainted(false);
+    }
+
+    
     /**
      * @param args the command line arguments
      */
@@ -79,5 +609,29 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBColores;
+    private javax.swing.JButton jBIconos;
+    private javax.swing.JButton jBLetras;
+    private javax.swing.JButton jBNuevaPartida;
+    private javax.swing.JButton jBNumeros;
+    private javax.swing.JButton jBSelector1;
+    private javax.swing.JButton jBSelector10;
+    private javax.swing.JButton jBSelector2;
+    private javax.swing.JButton jBSelector3;
+    private javax.swing.JButton jBSelector4;
+    private javax.swing.JButton jBSelector5;
+    private javax.swing.JButton jBSelector6;
+    private javax.swing.JButton jBSelector7;
+    private javax.swing.JButton jBSelector8;
+    private javax.swing.JButton jBSelector9;
+    private javax.swing.JComboBox jCBFilas;
+    private javax.swing.JComboBox jCBObjetos;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jChkNivAuto;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPOpciones;
+    private javax.swing.JPanel jPSelectColor;
+    private javax.swing.JPanel jPTipoElementos;
     // End of variables declaration//GEN-END:variables
 }
