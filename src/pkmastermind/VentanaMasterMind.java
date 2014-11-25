@@ -17,10 +17,12 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     String tipoObjeto = "Color";
     int numObjetos = 6;
     int numFilas = 3;
+    int solucion[];
     
     public VentanaMasterMind() {
         initComponents();
         actualizaSelector();
+        generaNuevaPartida();
     }
 
     /**
@@ -36,7 +38,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jChkNivAuto = new javax.swing.JCheckBox();
         jCBFilas = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        jCBDuplicados = new javax.swing.JCheckBox();
         jPTipoElementos = new javax.swing.JPanel();
         jBNumeros = new javax.swing.JButton();
         jBLetras = new javax.swing.JButton();
@@ -71,10 +73,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
         jCBFilas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "3", "4", "5", "6", "7", "8" }));
         jCBFilas.setEnabled(false);
+        jCBFilas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBFilasActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Num. Filas:");
 
-        jCheckBox1.setText("Permitir Duplicados");
+        jCBDuplicados.setText("Permitir Duplicados");
 
         jPTipoElementos.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Seleccione Tipo de Elementos"));
 
@@ -98,7 +105,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
         jBIconos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cat_1.png"))); // NOI18N
         jBIconos.setBorder(null);
-        jBIconos.setOpaque(true);
         jBIconos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBIconosActionPerformed(evt);
@@ -152,6 +158,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         });
 
         jBNuevaPartida.setText("Nueva Partida");
+        jBNuevaPartida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBNuevaPartidaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPOpcionesLayout = new javax.swing.GroupLayout(jPOpciones);
         jPOpciones.setLayout(jPOpcionesLayout);
@@ -173,7 +184,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                     .addGroup(jPOpcionesLayout.createSequentialGroup()
                         .addComponent(jChkNivAuto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox1))
+                        .addComponent(jCBDuplicados))
                     .addComponent(jPTipoElementos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -183,7 +194,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jChkNivAuto)
-                    .addComponent(jCheckBox1))
+                    .addComponent(jCBDuplicados))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -201,7 +212,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jBSelector1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jBSelector1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_1.png"))); // NOI18N
         jBSelector1.setBorder(null);
-        jBSelector1.setOpaque(true);
         jBSelector1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBSelector1ActionPerformed(evt);
@@ -376,6 +386,14 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
         numFilas   = Integer.valueOf(jCBFilas.getSelectedItem().toString());
         
+        //Si hay mas Filas que Objetos -> Permitimos Duplicados
+        if (numFilas > numObjetos) {
+            jCBDuplicados.setSelected(true);
+            jCBDuplicados.setEnabled(false);
+        } else {
+            jCBDuplicados.setEnabled(true);
+        }
+        
         //Iniciamos Botones Por Defecto
         jBSelector7.setVisible(false);
         jBSelector8.setVisible(false);
@@ -395,8 +413,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             default:
                 break;
         }
-
-
     }
     
     private void jBColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBColoresActionPerformed
@@ -417,7 +433,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jBSelector8.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_8.png")));
         jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_9.png")));
         jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_10.png")));
-        
     }//GEN-LAST:event_jBColoresActionPerformed
 
 
@@ -560,16 +575,51 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         actualizaSelector();
     }//GEN-LAST:event_jCBObjetosActionPerformed
 
+    private void jBNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartidaActionPerformed
+        
+        //Generamos una Nueva Partida
+        generaNuevaPartida();
+    }//GEN-LAST:event_jBNuevaPartidaActionPerformed
+
+    private void jCBFilasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBFilasActionPerformed
+        
+        //Actualizamos los Selectores
+        actualizaSelector();
+    }//GEN-LAST:event_jCBFilasActionPerformed
+
     private void generaNuevaPartida()
     {
         //Generamos la Temperatura Aleatoria Inicial
-        Random generadorNum = new Random();
-        //int tempActual = generadorNum.nextInt(TEMP_MAX_INI + 1) + TEMP_MIN_INI;
+        Random generadorNum = new Random();        
+        int contador = 0;
+        solucion = new int [numFilas];        
         
-        //
-        //jBColores.setOpaque(false);
-        //jBColores.setContentAreaFilled(false);
-        //jBColores.setBorderPainted(false);
+        //Generamos los Numeros Aleatorios Definidos en 'numFilas'
+        while (contador < numFilas){
+            //Generamos el Numero Aleatorio
+            int numAleatorio = generadorNum.nextInt(numObjetos) + 1;
+            
+            //Si Estan Permitidos los Duplicados
+            if (jCBDuplicados.isSelected()){                
+                solucion[contador]=numAleatorio;
+                contador++;
+                System.out.println("Num"+contador + ": "+numAleatorio);
+            }
+            //Si no Estan Permitidos los Duplicados
+            else if (!estaRepetido(numAleatorio)){                
+                solucion[contador]=numAleatorio;
+                contador++;
+                System.out.println("Num"+contador + ": "+numAleatorio);
+            }                
+        }
+    }
+    
+    private boolean estaRepetido(int numAleatorio){
+        for (int x=0; x < numFilas; x++){
+            if (solucion[x] == numAleatorio)
+                return true;
+        }
+        return false;
     }
 
     
@@ -624,9 +674,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private javax.swing.JButton jBSelector7;
     private javax.swing.JButton jBSelector8;
     private javax.swing.JButton jBSelector9;
+    private javax.swing.JCheckBox jCBDuplicados;
     private javax.swing.JComboBox jCBFilas;
     private javax.swing.JComboBox jCBObjetos;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jChkNivAuto;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
