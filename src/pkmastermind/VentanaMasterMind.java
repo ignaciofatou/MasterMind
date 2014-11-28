@@ -5,9 +5,9 @@
  */
 package pkmastermind;
 
-import java.lang.reflect.Field;
 import java.util.Random;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 /**
  *
@@ -21,6 +21,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     int solucion[];
     int seleccionados[];
     int seleccion;
+    JButton matrizBotones[][];
     
     public VentanaMasterMind() {
         initComponents();
@@ -735,18 +736,34 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     }//GEN-LAST:event_jCBFilasActionPerformed
 
     private void selecciona(int columna, javax.swing.JButton boton){
+        
+        try{
+            Class botonClass = Class.forName("javax.swing.JButton");
 
-        Class botonClass = Class.forName("javax.swing.JButton");
+            
+            
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        
+        
+        
         //Object botonObject = botonClass.get
-        Field botonField = botonClass.getField("name");
-        botonField.
+        //javax.swing.JButton temp = new javax.swing.JButton("jBFila1Colum1");
+        //temp.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_1.png")));
+        
+        //Field botonField = botonClass.getField("jBFila1Colum1");        
+        //botonField.
                 
-                //http://www.arumeinformatica.es/blog/java-reflection-parte-2/
+                
+                
+        //http://www.arumeinformatica.es/blog/java-reflection-parte-2/
                 
                 
         
-        seleccionados[columna - 1] = seleccion;
-        boton.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_1.png")));
+        //seleccionados[columna - 1] = seleccion;
+        //boton.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_1.png")));
 
         
     }
