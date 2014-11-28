@@ -7,7 +7,7 @@ package pkmastermind;
 
 import java.util.Random;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import javax.swing.JLabel;
 
 /**
  *
@@ -17,16 +17,31 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
     String tipoObjeto = "Color";
     int numObjetos = 6;
-    int numFilas = 3;
+    int longitud = 3;
     int solucion[];
     int seleccionados[];
     int seleccion;
-    JButton matrizBotones[][];
+    
+    ///
+    JLabel matrizUsuario[][];
+    JLabel matrizResult [][];
+    final int NUM_FILAS  = 10;
+    final int ANCHO_BTN  = 40;
+    final int ALTO_BTN   = 40;
+    final int MARGEN_BTN = 5;
+    final int ANCHO_RES  = 19;
+    final int ALTO_RES   = 19;
+    final int MARGEN_RES = 2;    
     
     public VentanaMasterMind() {
         initComponents();
+        System.out.println("Aqui 1");
         actualizaSelector();
+        System.out.println("Aqui 2");
         generaNuevaPartida();
+        System.out.println("Aqui 3");
+        /////////////////////////////
+        actualizaPaneles();
     }
 
     /**
@@ -40,7 +55,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
         jPOpciones = new javax.swing.JPanel();
         jChkNivAuto = new javax.swing.JCheckBox();
-        jCBFilas = new javax.swing.JComboBox();
+        jCBLongitud = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jCBDuplicados = new javax.swing.JCheckBox();
         jPTipoElementos = new javax.swing.JPanel();
@@ -62,17 +77,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jBSelector8 = new javax.swing.JButton();
         jBSelector9 = new javax.swing.JButton();
         jBSelector10 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jBFila1Colum1 = new javax.swing.JButton();
-        jBFila1Colum2 = new javax.swing.JButton();
-        jBFila1Colum3 = new javax.swing.JButton();
-        jBFila1Colum4 = new javax.swing.JButton();
-        jBFila1Colum5 = new javax.swing.JButton();
-        jBFila1Colum6 = new javax.swing.JButton();
-        jBFila1Colum7 = new javax.swing.JButton();
-        jBFila1Colum8 = new javax.swing.JButton();
-        jBFila1Colum9 = new javax.swing.JButton();
-        jBFila1Colum10 = new javax.swing.JButton();
+        jPanelSuperior = new javax.swing.JPanel();
+        jPanelResult = new javax.swing.JPanel();
+        jPanelBotones = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -86,15 +93,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         });
 
-        jCBFilas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "3", "4", "5", "6", "7", "8" }));
-        jCBFilas.setEnabled(false);
-        jCBFilas.addActionListener(new java.awt.event.ActionListener() {
+        jCBLongitud.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "3", "4", "5", "6", "7", "8" }));
+        jCBLongitud.setEnabled(false);
+        jCBLongitud.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCBFilasActionPerformed(evt);
+                jCBLongitudActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Num. Filas:");
+        jLabel2.setText("Longitud:");
 
         jCBDuplicados.setText("Permitir Duplicados");
 
@@ -189,7 +196,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                     .addGroup(jPOpcionesLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCBFilas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jCBLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -213,7 +220,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jCBFilas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCBLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(jCBObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBNuevaPartida))
@@ -359,131 +366,51 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanelResult.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jBFila1Colum1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum1.setBorder(null);
-        jBFila1Colum1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum1ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum2.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum2.setBorder(null);
-        jBFila1Colum2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum2ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum3.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum3.setBorder(null);
-        jBFila1Colum3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum3ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum4.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum4.setBorder(null);
-        jBFila1Colum4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum4ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum5.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum5.setBorder(null);
-        jBFila1Colum5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum5ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum6.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum6.setBorder(null);
-        jBFila1Colum6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum6ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum7.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum7.setBorder(null);
-        jBFila1Colum7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum7ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum8.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum8.setBorder(null);
-        jBFila1Colum8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum8ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum9.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum9.setBorder(null);
-        jBFila1Colum9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum9ActionPerformed(evt);
-            }
-        });
-
-        jBFila1Colum10.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBFila1Colum10.setBorder(null);
-        jBFila1Colum10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBFila1Colum10ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jBFila1Colum1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBFila1Colum10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(64, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanelResultLayout = new javax.swing.GroupLayout(jPanelResult);
+        jPanelResult.setLayout(jPanelResultLayout);
+        jPanelResultLayout.setHorizontalGroup(
+            jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 48, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(363, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBFila1Colum10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBFila1Colum1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+        jPanelResultLayout.setVerticalGroup(
+            jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jPanelBotones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanelBotonesLayout = new javax.swing.GroupLayout(jPanelBotones);
+        jPanelBotones.setLayout(jPanelBotonesLayout);
+        jPanelBotonesLayout.setHorizontalGroup(
+            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 138, Short.MAX_VALUE)
+        );
+        jPanelBotonesLayout.setVerticalGroup(
+            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 273, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanelSuperiorLayout = new javax.swing.GroupLayout(jPanelSuperior);
+        jPanelSuperior.setLayout(jPanelSuperiorLayout);
+        jPanelSuperiorLayout.setHorizontalGroup(
+            jPanelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSuperiorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelSuperiorLayout.setVerticalGroup(
+            jPanelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSuperiorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -492,14 +419,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPOpciones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPSelectColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPOpciones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPSelectColor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelSuperior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -507,10 +431,10 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPSelectColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelSuperior, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(132, Short.MAX_VALUE))
         );
 
         pack();
@@ -520,10 +444,10 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         
         //Si ponemos el Nivel Automático Desactivamos el ComboBox
         if (jChkNivAuto.isSelected()) {
-            jCBFilas.setEnabled(false);
+            jCBLongitud.setEnabled(false);
             jCBObjetos.setEnabled(false);
         } else {
-            jCBFilas.setEnabled(true);
+            jCBLongitud.setEnabled(true);
             jCBObjetos.setEnabled(true);
         }
     }//GEN-LAST:event_jChkNivAutoActionPerformed
@@ -532,10 +456,13 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         
         //Obtenemos el Numero de Objetos Seleccionados
         numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
-        numFilas   = Integer.valueOf(jCBFilas.getSelectedItem().toString());
+        longitud   = Integer.valueOf(jCBLongitud.getSelectedItem().toString());
+        
+        //Inicializamos Matriz
+        solucion = new int[longitud];
         
         //Si hay mas Filas que Objetos -> Permitimos Duplicados
-        if (numFilas > numObjetos) {
+        if (longitud > numObjetos) {
             jCBDuplicados.setSelected(true);
             jCBDuplicados.setEnabled(false);
         } else {
@@ -582,10 +509,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_9.png")));
         jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_10.png")));
     }//GEN-LAST:event_jBColoresActionPerformed
-
-
-    
-
     
     private void jBIconosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIconosActionPerformed
         
@@ -612,7 +535,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         ImageIcon imagen = new ImageIcon(nombreImagen);
         return imagen;
     }
-    
     
     private void jBLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLetrasActionPerformed
         
@@ -727,122 +649,212 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         
         //Generamos una Nueva Partida
         generaNuevaPartida();
+        
+        /////////////////////////////
+        actualizaPaneles();        
     }//GEN-LAST:event_jBNuevaPartidaActionPerformed
 
-    private void jCBFilasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBFilasActionPerformed
+    private void jCBLongitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBLongitudActionPerformed
         
         //Actualizamos los Selectores
         actualizaSelector();
-    }//GEN-LAST:event_jCBFilasActionPerformed
+    }//GEN-LAST:event_jCBLongitudActionPerformed
 
-    private void selecciona(int columna, javax.swing.JButton boton){
-        
-        try{
-            Class botonClass = Class.forName("javax.swing.JButton");
 
-            
-            
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-
-        
-        
-        
-        //Object botonObject = botonClass.get
-        //javax.swing.JButton temp = new javax.swing.JButton("jBFila1Colum1");
-        //temp.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_1.png")));
-        
-        //Field botonField = botonClass.getField("jBFila1Colum1");        
-        //botonField.
-                
-                
-                
-        //http://www.arumeinformatica.es/blog/java-reflection-parte-2/
-                
-                
-        
-        //seleccionados[columna - 1] = seleccion;
-        //boton.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_1.png")));
-
-        
-    }
     
-    private void jBFila1Colum1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum1ActionPerformed
-        selecciona(1, jBFila1Colum1);
-    }//GEN-LAST:event_jBFila1Colum1ActionPerformed
-
-    private void jBFila1Colum2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum2ActionPerformed
-        selecciona(2, jBFila1Colum2);
-    }//GEN-LAST:event_jBFila1Colum2ActionPerformed
-
-    private void jBFila1Colum3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum3ActionPerformed
-        selecciona(3, jBFila1Colum3);
-    }//GEN-LAST:event_jBFila1Colum3ActionPerformed
-
-    private void jBFila1Colum4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum4ActionPerformed
-        selecciona(4, jBFila1Colum4);
-    }//GEN-LAST:event_jBFila1Colum4ActionPerformed
-
-    private void jBFila1Colum5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum5ActionPerformed
-        selecciona(5, jBFila1Colum5);
-    }//GEN-LAST:event_jBFila1Colum5ActionPerformed
-
-    private void jBFila1Colum6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum6ActionPerformed
-        selecciona(6, jBFila1Colum6);
-    }//GEN-LAST:event_jBFila1Colum6ActionPerformed
-
-    private void jBFila1Colum7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum7ActionPerformed
-        selecciona(7, jBFila1Colum7);
-    }//GEN-LAST:event_jBFila1Colum7ActionPerformed
-
-    private void jBFila1Colum8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum8ActionPerformed
-        selecciona(8, jBFila1Colum8);
-    }//GEN-LAST:event_jBFila1Colum8ActionPerformed
-
-    private void jBFila1Colum9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum9ActionPerformed
-        selecciona(9, jBFila1Colum9);
-    }//GEN-LAST:event_jBFila1Colum9ActionPerformed
-
-    private void jBFila1Colum10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBFila1Colum10ActionPerformed
-        selecciona(10, jBFila1Colum10);
-    }//GEN-LAST:event_jBFila1Colum10ActionPerformed
-
     private void generaNuevaPartida()
     {
         //Generamos la Temperatura Aleatoria Inicial
         Random generadorNum = new Random();        
-        int contador = 0;
-        solucion = new int [numFilas];
-        seleccionados = new int [numFilas];
+        int contador = 0;        
+        seleccionados = new int [longitud];
         
         //Generamos los Numeros Aleatorios Definidos en 'numFilas'
-        while (contador < numFilas){
+        while (contador < longitud){
             //Generamos el Numero Aleatorio
             int numAleatorio = generadorNum.nextInt(numObjetos) + 1;
             
             //Si Estan Permitidos los Duplicados
-            if (jCBDuplicados.isSelected()){                
+            if (jCBDuplicados.isSelected()){     
                 solucion[contador]=numAleatorio;
                 contador++;
-                System.out.println("Num"+contador + ": "+numAleatorio);
             }
             //Si no Estan Permitidos los Duplicados
-            else if (!estaRepetido(numAleatorio)){                
+            else if (!estaRepetido(numAleatorio)){  
                 solucion[contador]=numAleatorio;
                 contador++;
-                System.out.println("Num"+contador + ": "+numAleatorio);
-            }                
+            }
         }
     }
     
     private boolean estaRepetido(int numAleatorio){
-        for (int x=0; x < numFilas; x++){
+        int longSolucion = solucion.length;
+        
+        for (int x=0; x < longSolucion; x++){
             if (solucion[x] == numAleatorio)
                 return true;
         }
         return false;
     }
+    
+    
+    ////////////////////////////////////////
+    private void actualizaPaneles(){
+        
+        //Obtenemos el Numero de Columnas y Filas
+        int numCol = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
+        
+        //Inicializamos el Panel de los Botones
+        inicializaPanelBotones(numCol);
+        
+        //Inicializamos el Panel del Resultado
+        inicializaPanelResultado(numCol);
+        
+        //Inicializamos el Panel Superior
+        inicializaPanelSuperior();
+    }
+    private void inicializaPanelBotones(int numCol){
+        //Limpiamos el Panel
+        jPanelBotones.removeAll();
+        
+        //Añadimos los Botones al Panel de Botones
+        generaBotones();
+        
+        //Cambiamos el Tamaño del Panel de Botones
+        resizePanelBotones(numCol); 
+    }
+    //Cambiamos el Tamaño del Panel de Botones
+    private void resizePanelBotones(int numCol){
+        //Establecemos el Tamaño del Panel Botones
+        int anchoPanel = (MARGEN_BTN + 2) + ((ANCHO_BTN + MARGEN_BTN) * numCol);
+        int altoPanel  = (MARGEN_BTN + 2) + ((ALTO_BTN  + MARGEN_BTN) * NUM_FILAS);
+        System.out.println("Tamaño Panel Botones - Ancho: " + anchoPanel + " - Alto: " + altoPanel);
+        jPanelBotones.setSize(anchoPanel, altoPanel);
+    }
+
+    private void inicializaPanelResultado(int numCol){
+        //Limpiamos el Panel
+        jPanelResult.removeAll();
+        
+        //Reposicionamos el Panel Resultado
+        posicionaPanelResultado();
+        
+        //Cambiamos el Tamaño del Panel Resultado
+        resizePanelResultado(numCol);
+        
+        //Añadimos los label al Panel de Resultado
+        generaLabel();
+    }
+    //Reposiciona el Panel del Resultado
+    private void posicionaPanelResultado(){
+        int posPanResX = jPanelBotones.getX() + jPanelBotones.getWidth() + MARGEN_BTN;
+        jPanelResult.setLocation(posPanResX, jPanelResult.getY());
+    }
+    //Cambiamos el Tamaño del Panel Resultado
+    private void resizePanelResultado(int numCol){
+        int columRes = (numCol + 1) / 2;        
+    
+        //Establecemos el Tamaño del Panel Resultado
+        int anchoPanel = (MARGEN_BTN * 2) + ((ANCHO_RES + MARGEN_RES) * columRes);
+        int altoPanel  = (MARGEN_BTN + 2) + ((ALTO_BTN  + MARGEN_BTN) * NUM_FILAS);
+        System.out.println("Tamaño Panel Resultado - Ancho: " + anchoPanel + " - Alto: " + altoPanel);
+        jPanelResult.setSize(anchoPanel, altoPanel);
+    }
+
+    private void inicializaPanelSuperior(){        
+        //Cambiamos el Tamaño del Panel Superior
+        resizePanelSuperior();
+    }
+    //Cambiamos el Tamaño del Panel Superior
+    private void resizePanelSuperior(){
+        
+        //Establecemos el Tamaño del Panel Superior
+        int anchoPanel = jPanelResult.getX() + jPanelResult.getWidth()  + MARGEN_BTN;
+        int altoPanel  = jPanelResult.getY() + jPanelResult.getHeight() + MARGEN_BTN;
+        System.out.println("Tamaño Panel Superior - Ancho: " + anchoPanel + " - Alto: " + altoPanel);
+        jPanelSuperior.setSize(anchoPanel, altoPanel);
+    } 
+
+    
+    private void generaBotones(){
+        
+        //Obtenemos el Numero de Columnas y Filas
+        int numColumnas = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
+        
+        int posBotonesX = MARGEN_BTN + 1;
+        int posBotonesY = MARGEN_BTN + 1;
+
+        //Inicializamos las Matrices
+        matrizUsuario = new JLabel[NUM_FILAS][numColumnas];
+        
+        //Generamos todos los Botones del Panel de Botones
+        for (int filas = 0; filas < NUM_FILAS; filas++) {
+            for (int colum = 0; colum < numColumnas; colum++) {
+                //Nuevo boton
+                matrizUsuario[filas][colum] = new JLabel();
+                matrizUsuario[filas][colum].setSize(ANCHO_BTN, ALTO_BTN);
+                matrizUsuario[filas][colum].setLocation(posBotonesX, posBotonesY);
+                matrizUsuario[filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
+                
+                //Añadimos los Botones a sus Paneles
+                jPanelBotones.add(matrizUsuario[filas][colum]);
+
+                //Incrementamos X
+                posBotonesX = posBotonesX + ANCHO_BTN + MARGEN_BTN;
+            }
+            //Inicializamos Variables
+            posBotonesX = MARGEN_BTN + 1;
+
+            //Incrementamos Y
+            posBotonesY = posBotonesY + ALTO_BTN + MARGEN_BTN;
+        }
+     }
+    
+    private void generaLabel(){
+        
+        //Obtenemos el Numero de Columnas y Filas
+        int numColumnas = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
+        int columRes    = (numColumnas + 1) / 2;
+        
+        int posResultX  = MARGEN_BTN + 1;
+        int posResultY  = MARGEN_BTN + 1;
+
+        //Inicializamos las Matrices
+        matrizResult  = new JLabel[NUM_FILAS][numColumnas];
+        
+        //Generamos todos los Label del Resultado
+        for (int filas = 0; filas < NUM_FILAS; filas++) {
+            for (int colum = 0; colum < numColumnas; colum++) {
+                //Nuevo Label
+                matrizResult [filas][colum] = new JLabel();
+                matrizResult [filas][colum].setSize(ANCHO_RES, ALTO_RES);
+                matrizResult [filas][colum].setLocation(posResultX , posResultY);
+                matrizResult [filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/check_verde.png")));
+
+                //Añadimos los Botones a sus Paneles
+                jPanelResult.add(matrizResult[filas][colum]);
+
+                //Si ha llegado a la Mitad
+                if ((colum + 1) == columRes) {
+                    //Reposicionamos la Posicion X al Inicio
+                    posResultX = MARGEN_BTN + 1;
+                    
+                    //Bajamos un Nivel la Posicion Y
+                    posResultY = posResultY + ALTO_RES + MARGEN_RES;
+                } 
+                else {
+                    //Aumentamos distancia en la Posicion X
+                    posResultX = posResultX + ANCHO_RES + MARGEN_RES;
+                }
+            }
+            //Reposicionamos la Posicion X al Inicio
+            posResultX  = MARGEN_BTN + 1;
+
+            //Aumentamos distancia en la Posicion Y
+            posResultY  = posResultY  + ALTO_RES + MARGEN_BTN;
+        }
+    }
+    ////////////////////////////////////////
 
     
     /**
@@ -882,16 +894,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBColores;
-    private javax.swing.JButton jBFila1Colum1;
-    private javax.swing.JButton jBFila1Colum10;
-    private javax.swing.JButton jBFila1Colum2;
-    private javax.swing.JButton jBFila1Colum3;
-    private javax.swing.JButton jBFila1Colum4;
-    private javax.swing.JButton jBFila1Colum5;
-    private javax.swing.JButton jBFila1Colum6;
-    private javax.swing.JButton jBFila1Colum7;
-    private javax.swing.JButton jBFila1Colum8;
-    private javax.swing.JButton jBFila1Colum9;
     private javax.swing.JButton jBIconos;
     private javax.swing.JButton jBLetras;
     private javax.swing.JButton jBNuevaPartida;
@@ -907,7 +909,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private javax.swing.JButton jBSelector8;
     private javax.swing.JButton jBSelector9;
     private javax.swing.JCheckBox jCBDuplicados;
-    private javax.swing.JComboBox jCBFilas;
+    private javax.swing.JComboBox jCBLongitud;
     private javax.swing.JComboBox jCBObjetos;
     private javax.swing.JCheckBox jChkNivAuto;
     private javax.swing.JLabel jLabel2;
@@ -915,6 +917,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private javax.swing.JPanel jPOpciones;
     private javax.swing.JPanel jPSelectColor;
     private javax.swing.JPanel jPTipoElementos;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanelBotones;
+    private javax.swing.JPanel jPanelResult;
+    private javax.swing.JPanel jPanelSuperior;
     // End of variables declaration//GEN-END:variables
 }
