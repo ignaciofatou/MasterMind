@@ -7,6 +7,7 @@ package pkmastermind;
 
 import java.util.Random;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 
 /**
@@ -15,7 +16,7 @@ import javax.swing.JLabel;
  */
 public class VentanaMasterMind extends javax.swing.JFrame {
 
-    String tipoObjeto = "Color";
+    String tipoObjeto = "Icono";
     int numObjetos = 6;
     int longitud = 3;
     int solucion[];
@@ -23,11 +24,12 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     int seleccion;
     
     ///
-    JLabel matrizUsuario[][];
-    JLabel matrizResult [][];
+    JLabel  matrizUsuario[][];
+    JLabel  matrizResult [][];
+    JButton matrizSelect [];
     final int NUM_FILAS  = 10;
-    final int ANCHO_BTN  = 40;
-    final int ALTO_BTN   = 40;
+    final int ANCHO_BTN  = 36;
+    final int ALTO_BTN   = 36;
     final int MARGEN_BTN = 5;
     final int ANCHO_RES  = 19;
     final int ALTO_RES   = 19;
@@ -35,13 +37,16 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     public VentanaMasterMind() {
         initComponents();
-        System.out.println("Aqui 1");
+
         actualizaSelector();
-        System.out.println("Aqui 2");
+
         generaNuevaPartida();
-        System.out.println("Aqui 3");
+
         /////////////////////////////
         actualizaPaneles();
+        
+        
+        generaSelector();
     }
 
     /**
@@ -58,32 +63,21 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jCBLongitud = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jCBDuplicados = new javax.swing.JCheckBox();
-        jPTipoElementos = new javax.swing.JPanel();
-        jBNumeros = new javax.swing.JButton();
-        jBLetras = new javax.swing.JButton();
-        jBIconos = new javax.swing.JButton();
-        jBColores = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jCBObjetos = new javax.swing.JComboBox();
         jBNuevaPartida = new javax.swing.JButton();
-        jPSelectColor = new javax.swing.JPanel();
-        jBSelector1 = new javax.swing.JButton();
-        jBSelector2 = new javax.swing.JButton();
-        jBSelector3 = new javax.swing.JButton();
-        jBSelector4 = new javax.swing.JButton();
-        jBSelector5 = new javax.swing.JButton();
-        jBSelector6 = new javax.swing.JButton();
-        jBSelector7 = new javax.swing.JButton();
-        jBSelector8 = new javax.swing.JButton();
-        jBSelector9 = new javax.swing.JButton();
-        jBSelector10 = new javax.swing.JButton();
-        jPanelSuperior = new javax.swing.JPanel();
-        jPanelResult = new javax.swing.JPanel();
+        jBColores = new javax.swing.JButton();
+        jBIconos = new javax.swing.JButton();
+        jBLetras = new javax.swing.JButton();
+        jBNumeros = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jPanelSelector = new javax.swing.JPanel();
         jPanelBotones = new javax.swing.JPanel();
+        jPanelResult = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPOpciones.setBorder(javax.swing.BorderFactory.createTitledBorder("Opciones"));
+        jPOpciones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jChkNivAuto.setSelected(true);
         jChkNivAuto.setText("Nivel Automático");
@@ -105,70 +99,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
         jCBDuplicados.setText("Permitir Duplicados");
 
-        jPTipoElementos.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Seleccione Tipo de Elementos"));
-
-        jBNumeros.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBNumeros.setText("0");
-        jBNumeros.setBorder(null);
-        jBNumeros.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBNumerosActionPerformed(evt);
-            }
-        });
-
-        jBLetras.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBLetras.setText("A");
-        jBLetras.setBorder(null);
-        jBLetras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBLetrasActionPerformed(evt);
-            }
-        });
-
-        jBIconos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cat_1.png"))); // NOI18N
-        jBIconos.setBorder(null);
-        jBIconos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBIconosActionPerformed(evt);
-            }
-        });
-
-        jBColores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_1.png"))); // NOI18N
-        jBColores.setBorder(null);
-        jBColores.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBColoresActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPTipoElementosLayout = new javax.swing.GroupLayout(jPTipoElementos);
-        jPTipoElementos.setLayout(jPTipoElementosLayout);
-        jPTipoElementosLayout.setHorizontalGroup(
-            jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPTipoElementosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jBColores, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPTipoElementosLayout.setVerticalGroup(
-            jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPTipoElementosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBColores, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPTipoElementosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         jLabel3.setText("Num. Objetos");
 
         jCBObjetos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "6", "7", "8", "9", "10" }));
@@ -186,6 +116,42 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         });
 
+        jBColores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_1.png"))); // NOI18N
+        jBColores.setBorder(null);
+        jBColores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBColoresActionPerformed(evt);
+            }
+        });
+
+        jBIconos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cat_1.png"))); // NOI18N
+        jBIconos.setBorder(null);
+        jBIconos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBIconosActionPerformed(evt);
+            }
+        });
+
+        jBLetras.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBLetras.setText("A");
+        jBLetras.setBorder(null);
+        jBLetras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBLetrasActionPerformed(evt);
+            }
+        });
+
+        jBNumeros.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jBNumeros.setText("0");
+        jBNumeros.setBorder(null);
+        jBNumeros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBNumerosActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Seleccione Tipo de Iconos:");
+
         javax.swing.GroupLayout jPOpcionesLayout = new javax.swing.GroupLayout(jPOpciones);
         jPOpciones.setLayout(jPOpcionesLayout);
         jPOpcionesLayout.setHorizontalGroup(
@@ -193,6 +159,14 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             .addGroup(jPOpcionesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPOpcionesLayout.createSequentialGroup()
+                        .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBColores, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPOpcionesLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -205,15 +179,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                         .addComponent(jBNuevaPartida))
                     .addGroup(jPOpcionesLayout.createSequentialGroup()
                         .addComponent(jChkNivAuto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCBDuplicados))
-                    .addComponent(jPTipoElementos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPOpcionesLayout.setVerticalGroup(
             jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPOpcionesLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jChkNivAuto)
                     .addComponent(jCBDuplicados))
@@ -224,146 +198,43 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(jCBObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBNuevaPartida))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPTipoElementos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jBColores, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(27, 27, 27))
         );
 
-        jPSelectColor.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanelSelector.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanelSelector.setPreferredSize(new java.awt.Dimension(48, 562));
 
-        jBSelector1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_1.png"))); // NOI18N
-        jBSelector1.setBorder(null);
-        jBSelector1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector1ActionPerformed(evt);
-            }
-        });
-
-        jBSelector2.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_2.png"))); // NOI18N
-        jBSelector2.setBorder(null);
-        jBSelector2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector2ActionPerformed(evt);
-            }
-        });
-
-        jBSelector3.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_3.png"))); // NOI18N
-        jBSelector3.setBorder(null);
-        jBSelector3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector3ActionPerformed(evt);
-            }
-        });
-
-        jBSelector4.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_4.png"))); // NOI18N
-        jBSelector4.setBorder(null);
-        jBSelector4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector4ActionPerformed(evt);
-            }
-        });
-
-        jBSelector5.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_5.png"))); // NOI18N
-        jBSelector5.setBorder(null);
-        jBSelector5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector5ActionPerformed(evt);
-            }
-        });
-
-        jBSelector6.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_6.png"))); // NOI18N
-        jBSelector6.setBorder(null);
-        jBSelector6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector6ActionPerformed(evt);
-            }
-        });
-
-        jBSelector7.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_7.png"))); // NOI18N
-        jBSelector7.setBorder(null);
-        jBSelector7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector7ActionPerformed(evt);
-            }
-        });
-
-        jBSelector8.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_8.png"))); // NOI18N
-        jBSelector8.setBorder(null);
-        jBSelector8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector8ActionPerformed(evt);
-            }
-        });
-
-        jBSelector9.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_9.png"))); // NOI18N
-        jBSelector9.setBorder(null);
-        jBSelector9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector9ActionPerformed(evt);
-            }
-        });
-
-        jBSelector10.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/color_10.png"))); // NOI18N
-        jBSelector10.setBorder(null);
-        jBSelector10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSelector10ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPSelectColorLayout = new javax.swing.GroupLayout(jPSelectColor);
-        jPSelectColor.setLayout(jPSelectColorLayout);
-        jPSelectColorLayout.setHorizontalGroup(
-            jPSelectColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPSelectColorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jBSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBSelector10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanelSelectorLayout = new javax.swing.GroupLayout(jPanelSelector);
+        jPanelSelector.setLayout(jPanelSelectorLayout);
+        jPanelSelectorLayout.setHorizontalGroup(
+            jPanelSelectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 44, Short.MAX_VALUE)
         );
-        jPSelectColorLayout.setVerticalGroup(
-            jPSelectColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPSelectColorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPSelectColorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBSelector10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jPanelSelectorLayout.setVerticalGroup(
+            jPanelSelectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 453, Short.MAX_VALUE)
+        );
+
+        jPanelBotones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanelBotonesLayout = new javax.swing.GroupLayout(jPanelBotones);
+        jPanelBotones.setLayout(jPanelBotonesLayout);
+        jPanelBotonesLayout.setHorizontalGroup(
+            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 273, Short.MAX_VALUE)
+        );
+        jPanelBotonesLayout.setVerticalGroup(
+            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jPanelResult.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -379,40 +250,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jPanelBotones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        javax.swing.GroupLayout jPanelBotonesLayout = new javax.swing.GroupLayout(jPanelBotones);
-        jPanelBotones.setLayout(jPanelBotonesLayout);
-        jPanelBotonesLayout.setHorizontalGroup(
-            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 273, Short.MAX_VALUE)
-        );
-        jPanelBotonesLayout.setVerticalGroup(
-            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanelSuperiorLayout = new javax.swing.GroupLayout(jPanelSuperior);
-        jPanelSuperior.setLayout(jPanelSuperiorLayout);
-        jPanelSuperiorLayout.setHorizontalGroup(
-            jPanelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSuperiorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanelSuperiorLayout.setVerticalGroup(
-            jPanelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelSuperiorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(41, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -420,24 +257,26 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelSuperior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPOpciones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPSelectColor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 117, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(517, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPSelectColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelSuperior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelSelector, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
+                .addGap(0, 73, Short.MAX_VALUE))
         );
 
         pack();
@@ -455,6 +294,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jChkNivAutoActionPerformed
 
+
+    
+    
     private void actualizaSelector(){
         
         //Obtenemos el Numero de Objetos Seleccionados
@@ -471,181 +313,17 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         } else {
             jCBDuplicados.setEnabled(true);
         }
-        
-        //Iniciamos Botones Por Defecto
-        jBSelector7.setVisible(false);
-        jBSelector8.setVisible(false);
-        jBSelector9.setVisible(false);
-        jBSelector10.setVisible(false);
-        
-        //No ponemos break para que siga ejecutando lo de abajo
-        switch (numObjetos){
-            case 10:
-                jBSelector10.setVisible(true);
-            case 9:
-                jBSelector9.setVisible(true);
-            case 8:
-                jBSelector8.setVisible(true);
-            case 7:
-                jBSelector7.setVisible(true);
-            default:
-                break;
-        }
+        //Reiniciamos los Botones
+        generaSelector();
     }
-    
-    private void jBColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBColoresActionPerformed
-        
-        //Establecemos los Colores como Tipo de Objeto
-        tipoObjeto = "Color";
-        
-        //Limpiamos los botones
-        limpiarBotones();
-        
-        jBSelector1.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_1.png")));
-        jBSelector2.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_2.png")));
-        jBSelector3.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_3.png")));
-        jBSelector4.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_4.png")));
-        jBSelector5.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_5.png")));
-        jBSelector6.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_6.png")));
-        jBSelector7.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_7.png")));
-        jBSelector8.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_8.png")));
-        jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_9.png")));
-        jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_10.png")));
-    }//GEN-LAST:event_jBColoresActionPerformed
-    
-    private void jBIconosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIconosActionPerformed
-        
-        //Establecemos los Iconos como Tipo de Objeto
-        tipoObjeto = "Icono";
-        
-        //Limpiamos los botones
-        limpiarBotones();
-        
-        jBSelector1.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_1.png")));
-        jBSelector2.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_2.png")));
-        jBSelector3.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_3.png")));
-        jBSelector4.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_4.png")));
-        jBSelector5.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_5.png")));
-        jBSelector6.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_6.png")));
-        jBSelector7.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_7.png")));
-        jBSelector8.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_8.png")));
-        jBSelector9.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_9.png")));
-        jBSelector10.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_10.png")));
-    }//GEN-LAST:event_jBIconosActionPerformed
-    //jBSelector1.setIcon(getImageIcon("../Imagenes/color_2.png"));
+            //jBSelector1.setIcon(getImageIcon("../Imagenes/color_2.png"));
     private ImageIcon getImageIcon(String nombreImagen){
         
         ImageIcon imagen = new ImageIcon(nombreImagen);
         return imagen;
     }
     
-    private void jBLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLetrasActionPerformed
-        
-        //Establecemos las Letras como Tipo de Objeto
-        tipoObjeto = "Letra";
-        
-        //Limpiamos los botones
-        limpiarBotones();
-        
-        jBSelector1.setText("A");
-        jBSelector2.setText("B");
-        jBSelector3.setText("C");
-        jBSelector4.setText("D");
-        jBSelector5.setText("E");
-        jBSelector6.setText("F");
-        jBSelector7.setText("G");
-        jBSelector8.setText("H");
-        jBSelector9.setText("I");
-        jBSelector10.setText("J");
-    }//GEN-LAST:event_jBLetrasActionPerformed
-
-    private void jBNumerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNumerosActionPerformed
-        
-        //Establecemos los Numeros como Tipo de Objeto
-        tipoObjeto = "Numero";
-        
-        //Limpiamos los botones
-        limpiarBotones();
-        
-        jBSelector1.setText("0");
-        jBSelector2.setText("1");
-        jBSelector3.setText("2");
-        jBSelector4.setText("3");
-        jBSelector5.setText("4");
-        jBSelector6.setText("5");
-        jBSelector7.setText("6");
-        jBSelector8.setText("7");
-        jBSelector9.setText("8");
-        jBSelector10.setText("9");
-    }//GEN-LAST:event_jBNumerosActionPerformed
-
-    private void limpiarBotones(){
-        jBSelector1.setIcon(null);
-        jBSelector1.setText("");
-        jBSelector2.setIcon(null);
-        jBSelector2.setText("");
-        jBSelector3.setIcon(null);
-        jBSelector3.setText("");
-        jBSelector4.setIcon(null);
-        jBSelector4.setText("");
-        jBSelector5.setIcon(null);
-        jBSelector5.setText("");
-        jBSelector6.setIcon(null);
-        jBSelector6.setText("");
-        jBSelector7.setIcon(null);
-        jBSelector7.setText("");
-        jBSelector8.setIcon(null);
-        jBSelector8.setText("");
-        jBSelector9.setIcon(null);
-        jBSelector9.setText("");
-        jBSelector10.setIcon(null);
-        jBSelector10.setText("");
-    }
-    
-    private void jBSelector1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector1ActionPerformed
-        seleccion = 1;
-    }//GEN-LAST:event_jBSelector1ActionPerformed
-
-    private void jBSelector2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector2ActionPerformed
-        seleccion = 2;
-    }//GEN-LAST:event_jBSelector2ActionPerformed
-
-    private void jBSelector3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector3ActionPerformed
-        seleccion = 3;
-    }//GEN-LAST:event_jBSelector3ActionPerformed
-
-    private void jBSelector4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector4ActionPerformed
-        seleccion = 4;
-    }//GEN-LAST:event_jBSelector4ActionPerformed
-
-    private void jBSelector5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector5ActionPerformed
-        seleccion = 5;
-    }//GEN-LAST:event_jBSelector5ActionPerformed
-
-    private void jBSelector6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector6ActionPerformed
-        seleccion = 6;
-    }//GEN-LAST:event_jBSelector6ActionPerformed
-
-    private void jBSelector7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector7ActionPerformed
-        seleccion = 7;
-    }//GEN-LAST:event_jBSelector7ActionPerformed
-
-    private void jBSelector8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector8ActionPerformed
-        seleccion = 8;
-    }//GEN-LAST:event_jBSelector8ActionPerformed
-
-    private void jBSelector9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector9ActionPerformed
-        seleccion = 9;
-    }//GEN-LAST:event_jBSelector9ActionPerformed
-
-    private void jBSelector10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSelector10ActionPerformed
-        seleccion = 10;
-    }//GEN-LAST:event_jBSelector10ActionPerformed
-
     private void jCBObjetosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBObjetosActionPerformed
-        
-        //Actualizamos los Selectores
-        actualizaSelector();
     }//GEN-LAST:event_jCBObjetosActionPerformed
 
     private void jBNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartidaActionPerformed
@@ -658,10 +336,86 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     }//GEN-LAST:event_jBNuevaPartidaActionPerformed
 
     private void jCBLongitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBLongitudActionPerformed
-        
-        //Actualizamos los Selectores
-        actualizaSelector();
     }//GEN-LAST:event_jCBLongitudActionPerformed
+    private void jBColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBColoresActionPerformed
+
+        //Establecemos los Colores como Tipo de Objeto
+        tipoObjeto = "Color";
+        
+        generaSelector();
+    }//GEN-LAST:event_jBColoresActionPerformed
+    private void jBIconosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIconosActionPerformed
+
+        //Establecemos los Iconos como Tipo de Objeto
+        tipoObjeto = "Icono";
+        
+        generaSelector();
+    }//GEN-LAST:event_jBIconosActionPerformed
+    private void jBLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLetrasActionPerformed
+
+        //Establecemos las Letras como Tipo de Objeto
+        tipoObjeto = "Letra";
+        
+        generaSelector();
+    }//GEN-LAST:event_jBLetrasActionPerformed
+    private void jBNumerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNumerosActionPerformed
+
+        //Establecemos los Numeros como Tipo de Objeto
+        tipoObjeto = "Numero";
+        
+        generaSelector();
+    }//GEN-LAST:event_jBNumerosActionPerformed
+    private void generaSelector(){
+        //Obtenemos el Numero de Columnas y Filas
+        int numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
+
+        int posBotonesX = MARGEN_BTN + 1;
+        int posBotonesY = MARGEN_BTN + 1;
+        
+        //Inicializamos las Matrices
+        matrizSelect = new JButton[numObjetos];
+        
+        //Inicializamos el Texto del Boton
+        char letraBoton = '\0';
+        if (tipoObjeto.equals("Letra"))
+            letraBoton = 'A';
+        else if (tipoObjeto.equals("Letra"))
+            letraBoton = '0';
+        
+        //Generamos todos los Botones del Panel de Botones
+        for (int posicion = 0; posicion < numObjetos; posicion++) {
+            //Nuevo boton
+            matrizSelect[posicion] = new JButton();
+            matrizSelect[posicion].setSize(ANCHO_BTN, ALTO_BTN);
+            matrizSelect[posicion].setLocation(posBotonesX, posBotonesY);
+            
+            switch(tipoObjeto){
+                case "Icono":
+                    matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_" + (posicion + 1) + ".png")));
+                    matrizSelect[posicion].setText("");
+                    break;
+                case "Color":
+                    matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_" + (posicion + 1) + ".png")));
+                    matrizSelect[posicion].setText("");
+                    break;
+                case "Letra":
+                    matrizSelect[posicion].setText(""+letraBoton);
+                    letraBoton++;
+                    matrizSelect[posicion].setIcon(null);
+                    break;
+                case "Numero":
+                    matrizSelect[posicion].setText(""+letraBoton);
+                    letraBoton++;
+                    matrizSelect[posicion].setIcon(null);
+                    break;
+            }
+            //Añadimos los Botones a sus Paneles
+            jPanelSelector.add(matrizSelect[posicion]);
+
+            //Incrementamos X
+            posBotonesY = posBotonesY + ANCHO_BTN + MARGEN_BTN;
+        }
+    }
 
 
     
@@ -775,9 +529,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         int anchoPanel = jPanelResult.getX() + jPanelResult.getWidth()  + MARGEN_BTN;
         int altoPanel  = jPanelResult.getY() + jPanelResult.getHeight() + MARGEN_BTN;
         System.out.println("Tamaño Panel Superior - Ancho: " + anchoPanel + " - Alto: " + altoPanel);
-        jPanelSuperior.setSize(anchoPanel, altoPanel);
+        jPanelSelector.setSize(anchoPanel, altoPanel);
     } 
 
+
+    
     
     private void generaBotones(){
         
@@ -901,27 +657,16 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private javax.swing.JButton jBLetras;
     private javax.swing.JButton jBNuevaPartida;
     private javax.swing.JButton jBNumeros;
-    private javax.swing.JButton jBSelector1;
-    private javax.swing.JButton jBSelector10;
-    private javax.swing.JButton jBSelector2;
-    private javax.swing.JButton jBSelector3;
-    private javax.swing.JButton jBSelector4;
-    private javax.swing.JButton jBSelector5;
-    private javax.swing.JButton jBSelector6;
-    private javax.swing.JButton jBSelector7;
-    private javax.swing.JButton jBSelector8;
-    private javax.swing.JButton jBSelector9;
     private javax.swing.JCheckBox jCBDuplicados;
     private javax.swing.JComboBox jCBLongitud;
     private javax.swing.JComboBox jCBObjetos;
     private javax.swing.JCheckBox jChkNivAuto;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPOpciones;
-    private javax.swing.JPanel jPSelectColor;
-    private javax.swing.JPanel jPTipoElementos;
     private javax.swing.JPanel jPanelBotones;
     private javax.swing.JPanel jPanelResult;
-    private javax.swing.JPanel jPanelSuperior;
+    private javax.swing.JPanel jPanelSelector;
     // End of variables declaration//GEN-END:variables
 }
