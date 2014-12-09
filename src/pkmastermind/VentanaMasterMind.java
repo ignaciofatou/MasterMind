@@ -16,7 +16,11 @@ import javax.swing.JLabel;
  */
 public class VentanaMasterMind extends javax.swing.JFrame {
 
-    String tipoObjeto = "Icono";
+    private static final String OBJT_GATO  = "gato";
+    private static final String OBJT_COLOR = "color";
+    private static final String OBJT_LETRA = "letra";
+    private static final String OBJT_NUMER = "numero";
+    
     int numObjetos = 6;
     int longitud = 3;
     int solucion[];
@@ -28,8 +32,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     JLabel  matrizResult [][];
     JButton matrizSelect [];
     final int NUM_FILAS  = 10;
-    final int ANCHO_BTN  = 36;
-    final int ALTO_BTN   = 36;
+    final int ANCHO_BTN  = 30;
+    final int ALTO_BTN   = 30;
     final int MARGEN_BTN = 5;
     final int ANCHO_RES  = 19;
     final int ALTO_RES   = 19;
@@ -45,8 +49,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         /////////////////////////////
         actualizaPaneles();
         
-        
-        generaSelector();
+        //Establecemos el Icono de los Gatos Por defecto
+        generaSelector(OBJT_GATO);
     }
 
     /**
@@ -124,7 +128,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         });
 
-        jBIconos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cat_1.png"))); // NOI18N
+        jBIconos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/gato_1.png"))); // NOI18N
         jBIconos.setBorder(null);
         jBIconos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -313,17 +317,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         } else {
             jCBDuplicados.setEnabled(true);
         }
-        //Reiniciamos los Botones
-        generaSelector();
-    }
-            //jBSelector1.setIcon(getImageIcon("../Imagenes/color_2.png"));
-    private ImageIcon getImageIcon(String nombreImagen){
-        
-        ImageIcon imagen = new ImageIcon(nombreImagen);
-        return imagen;
     }
     
     private void jCBObjetosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBObjetosActionPerformed
+        actualizaSelector();
+
     }//GEN-LAST:event_jCBObjetosActionPerformed
 
     private void jBNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartidaActionPerformed
@@ -331,43 +329,32 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Generamos una Nueva Partida
         generaNuevaPartida();
         
-        /////////////////////////////
+        //
         actualizaPaneles();        
     }//GEN-LAST:event_jBNuevaPartidaActionPerformed
 
     private void jCBLongitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBLongitudActionPerformed
+        actualizaSelector();
     }//GEN-LAST:event_jCBLongitudActionPerformed
     private void jBColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBColoresActionPerformed
-
         //Establecemos los Colores como Tipo de Objeto
-        tipoObjeto = "Color";
-        
-        generaSelector();
+        generaSelector(OBJT_COLOR);
     }//GEN-LAST:event_jBColoresActionPerformed
     private void jBIconosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIconosActionPerformed
-
         //Establecemos los Iconos como Tipo de Objeto
-        tipoObjeto = "Icono";
-        
-        generaSelector();
+        generaSelector(OBJT_GATO);
     }//GEN-LAST:event_jBIconosActionPerformed
     private void jBLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLetrasActionPerformed
-
         //Establecemos las Letras como Tipo de Objeto
-        tipoObjeto = "Letra";
-        
-        generaSelector();
+        generaSelector(OBJT_LETRA);
     }//GEN-LAST:event_jBLetrasActionPerformed
     private void jBNumerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNumerosActionPerformed
-
         //Establecemos los Numeros como Tipo de Objeto
-        tipoObjeto = "Numero";
-        
-        generaSelector();
+        generaSelector(OBJT_NUMER);
     }//GEN-LAST:event_jBNumerosActionPerformed
-    private void generaSelector(){
+    private void generaSelector(String tipoObjeto){
         //Obtenemos el Numero de Columnas y Filas
-        int numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
+        numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
 
         int posBotonesX = MARGEN_BTN + 1;
         int posBotonesY = MARGEN_BTN + 1;
@@ -375,12 +362,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Inicializamos las Matrices
         matrizSelect = new JButton[numObjetos];
         
-        //Inicializamos el Texto del Boton
-        char letraBoton = '\0';
-        if (tipoObjeto.equals("Letra"))
-            letraBoton = 'A';
-        else if (tipoObjeto.equals("Letra"))
-            letraBoton = '0';
+        //Inicializamos el Panel
+        jPanelSelector.removeAll();        
         
         //Generamos todos los Botones del Panel de Botones
         for (int posicion = 0; posicion < numObjetos; posicion++) {
@@ -388,33 +371,16 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             matrizSelect[posicion] = new JButton();
             matrizSelect[posicion].setSize(ANCHO_BTN, ALTO_BTN);
             matrizSelect[posicion].setLocation(posBotonesX, posBotonesY);
-            
-            switch(tipoObjeto){
-                case "Icono":
-                    matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/cat_" + (posicion + 1) + ".png")));
-                    matrizSelect[posicion].setText("");
-                    break;
-                case "Color":
-                    matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/color_" + (posicion + 1) + ".png")));
-                    matrizSelect[posicion].setText("");
-                    break;
-                case "Letra":
-                    matrizSelect[posicion].setText(""+letraBoton);
-                    letraBoton++;
-                    matrizSelect[posicion].setIcon(null);
-                    break;
-                case "Numero":
-                    matrizSelect[posicion].setText(""+letraBoton);
-                    letraBoton++;
-                    matrizSelect[posicion].setIcon(null);
-                    break;
-            }
+            matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (posicion + 1) + ".png")));
+
             //Añadimos los Botones a sus Paneles
             jPanelSelector.add(matrizSelect[posicion]);
 
             //Incrementamos X
             posBotonesY = posBotonesY + ANCHO_BTN + MARGEN_BTN;
         }
+        //Refrescamos el Panel
+        jPanelSelector.repaint();
     }
 
 
@@ -471,8 +437,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         inicializaPanelSuperior();
     }
     private void inicializaPanelBotones(int numCol){
-        //Limpiamos el Panel
-        jPanelBotones.removeAll();
         
         //Añadimos los Botones al Panel de Botones
         generaBotones();
@@ -490,8 +454,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     }
 
     private void inicializaPanelResultado(int numCol){
-        //Limpiamos el Panel
-        jPanelResult.removeAll();
         
         //Reposicionamos el Panel Resultado
         posicionaPanelResultado();
@@ -546,6 +508,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Inicializamos las Matrices
         matrizUsuario = new JLabel[NUM_FILAS][numColumnas];
         
+        //Inicializamos el Panel
+        jPanelBotones.removeAll(); 
+        
         //Generamos todos los Botones del Panel de Botones
         for (int filas = 0; filas < NUM_FILAS; filas++) {
             for (int colum = 0; colum < numColumnas; colum++) {
@@ -567,6 +532,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Incrementamos Y
             posBotonesY = posBotonesY + ALTO_BTN + MARGEN_BTN;
         }
+        //Refrescamos el Panel
+        jPanelBotones.repaint();
      }
     
     private void generaLabel(){
@@ -580,6 +547,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
         //Inicializamos las Matrices
         matrizResult  = new JLabel[NUM_FILAS][numColumnas];
+        
+        //Inicializamos el Panel
+        jPanelResult.removeAll(); 
         
         //Generamos todos los Label del Resultado
         for (int filas = 0; filas < NUM_FILAS; filas++) {
@@ -612,6 +582,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Aumentamos distancia en la Posicion Y
             posResultY  = posResultY  + ALTO_RES + MARGEN_BTN;
         }
+        //Refrescamos el Panel
+        jPanelResult.repaint();
     }
     ////////////////////////////////////////
 

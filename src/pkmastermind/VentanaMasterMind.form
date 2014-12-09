@@ -218,7 +218,7 @@
         <Component class="javax.swing.JButton" name="jBIconos">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/cat_1.png"/>
+              <Image iconType="3" name="/Imagenes/gato_1.png"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="null"/>
