@@ -6,7 +6,6 @@
 package pkmastermind;
 
 import java.util.Random;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
@@ -21,10 +20,13 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private static final String OBJT_LETRA = "letra";
     private static final String OBJT_NUMER = "numero";
     
-    int numObjetos = 6;
-    int longitud = 3;
-    int solucion[];
-    int seleccionados[];
+    boolean automatico = true;
+    boolean duplicados = false;
+    int     numObjetos = 6;
+    int     longitud   = 3;
+    
+    int[] numerosGenerados;
+    int[] numerosSeleccionados;
     int seleccion;
     
     ///
@@ -40,17 +42,220 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     final int MARGEN_RES = 2;    
     
     public VentanaMasterMind() {
-        initComponents();
-
-        actualizaSelector();
-
-        generaNuevaPartida();
-
-        /////////////////////////////
-        actualizaPaneles();
         
-        //Establecemos el Icono de los Gatos Por defecto
-        generaSelector(OBJT_GATO);
+        //Inicializa Componentes
+        initComponents();
+        
+        //Centramos la ventana
+        setLocationRelativeTo(null);
+        
+        //Recuperamos las Opciones que se han marcado
+        recuperaOpciones();
+
+        //Generamos una nueva secuencia de Numeros Aleatorios
+        generaNumerosAleatorios();       
+
+        //Generamos el Panel Selector con Iconos de Gatos
+        generaPanelSelector(OBJT_GATO);
+        
+        //Generamos el Panel del Jugador
+        generaPanelJugada();
+        
+        //Generamos el Panel del Resultado
+        generaPanelResultado();
+    }
+
+    //Inicializamos las Opciones
+    //Activamos y Desactivamos lo Necesario para que no de Error
+    private void recuperaOpciones(){
+        
+        //Obtenemos si el Nivel esta en Modo Automatico
+        automatico = jChkNivAuto.isSelected();
+        
+        //Obtenemos si estan Permitidos los Duplicados
+        duplicados = jCBDuplicados.isSelected();
+        
+       //Obtenemos el Numero de Columnas Totales
+        longitud   = Integer.valueOf(jCBLongitud.getSelectedItem().toString());
+    
+        //Obtenemos el Numero de Objetos que se pueden seleccionar
+        numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
+    }
+    //Valida si hay alguna incongluencia en las Opciones
+    private void validaOpciones(){
+        //Si hay mas Filas que Objetos -> Permitimos Duplicados
+        if (Integer.valueOf(jCBLongitud.getSelectedItem().toString()) > Integer.valueOf(jCBObjetos.getSelectedItem().toString())) {
+            jCBDuplicados.setSelected(true);
+            jCBDuplicados.setEnabled(false);
+        } else {
+            jCBDuplicados.setEnabled(true);
+        }
+    }
+    
+    //Generamos una nueva secuencia de Numeros Aleatorios
+    private void generaNumerosAleatorios()
+    {
+        //Generamos la Temperatura Aleatoria Inicial
+        Random generadorNum = new Random();        
+        int contador = 0;
+        
+        //Inicializamos Matriz para los Numeros Aleatorios que vamos a Generar
+        numerosGenerados     = new int[longitud];
+        
+        //Inicializamos Matriz para los Numeros Que vamos a Seleccionar (*)
+        numerosSeleccionados = new int[longitud];
+        
+        //Generamos los Numeros Aleatorios Definidos en 'numFilas'
+        while (contador < longitud){
+            //Generamos el Numero Aleatorio
+            int numAleatorio = generadorNum.nextInt(numObjetos) + 1;
+            
+            //Si Estan Permitidos los Duplicados
+            if (jCBDuplicados.isSelected()){     
+                numerosGenerados[contador]=numAleatorio;
+                contador++;
+            }
+            //Si no Estan Permitidos los Duplicados
+            else if (!estaRepetido(numAleatorio)){  
+                numerosGenerados[contador]=numAleatorio;
+                contador++;
+            }
+        }
+    }
+    //Comprueba si el Numero ya está Repetido
+    private boolean estaRepetido(int numAleatorio){
+        int longSolucion = numerosGenerados.length;
+        
+        for (int x=0; x < longSolucion; x++){
+            if (numerosGenerados[x] == numAleatorio)
+                return true;
+        }
+        return false;
+    }
+    
+    //Genera el Panel Selector
+    //Añade Dinamicamente los Botones + Cambia el Tamaño del Panel (Alto)
+    private void generaPanelSelector(String tipoObjeto){
+
+        //Inicializamos las Posiciones por Defecto
+        int posBotonesX = MARGEN_BTN + 1;
+        int posBotonesY = MARGEN_BTN + 1;
+        
+        //Inicializamos las Matrices
+        matrizSelect = new JButton[numObjetos];
+        
+        //Inicializamos el Panel
+        jPanelSelector.removeAll();        
+        
+        //Generamos todos los Botones del Panel de Botones
+        for (int posicion = 0; posicion < numObjetos; posicion++) {
+            //Nuevo boton
+            matrizSelect[posicion] = new JButton();
+            matrizSelect[posicion].setSize(ANCHO_BTN, ALTO_BTN);
+            matrizSelect[posicion].setLocation(posBotonesX, posBotonesY);
+            matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (posicion + 1) + ".png")));
+
+            //Añadimos los Botones a sus Paneles
+            jPanelSelector.add(matrizSelect[posicion]);
+
+            //Incrementamos X
+            posBotonesY = posBotonesY + ANCHO_BTN + MARGEN_BTN;
+        }
+        //Refrescamos el Panel
+        jPanelSelector.repaint();
+    }
+    
+    //Genera el Panel de la Jugada
+    //Añade Dinamicamente los Label + Reposiciona el Panel + 
+    //Cambia el Tamaño del Panel (Ancho)
+    private void generaPanelJugada(){
+        
+        //Inicializamos las Posiciones por Defecto
+        int posBotonesX = MARGEN_BTN + 1;
+        int posBotonesY = MARGEN_BTN + 1;
+
+        //Inicializamos las Matrices
+        matrizUsuario = new JLabel[NUM_FILAS][longitud];
+        
+        //Inicializamos el Panel
+        jPanelJugada.removeAll(); 
+        
+        //Generamos todos los Botones del Panel de Botones
+        for (int filas = 0; filas < NUM_FILAS; filas++) {
+            for (int colum = 0; colum < longitud; colum++) {
+                //Nuevo boton
+                matrizUsuario[filas][colum] = new JLabel();
+                matrizUsuario[filas][colum].setSize(ANCHO_BTN, ALTO_BTN);
+                matrizUsuario[filas][colum].setLocation(posBotonesX, posBotonesY);
+                matrizUsuario[filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
+                
+                //Añadimos los Botones a sus Paneles
+                jPanelJugada.add(matrizUsuario[filas][colum]);
+
+                //Incrementamos X
+                posBotonesX = posBotonesX + ANCHO_BTN + MARGEN_BTN;
+            }
+            //Inicializamos Variables
+            posBotonesX = MARGEN_BTN + 1;
+
+            //Incrementamos Y
+            posBotonesY = posBotonesY + ALTO_BTN + MARGEN_BTN;
+        }
+        //Refrescamos el Panel
+        jPanelJugada.repaint();
+    }
+    
+    //Genera el Panel del Resultado
+    //Añade Dinamicamente los Label + Reposiciona el Panel + 
+    //Cambia el Tamaño del Panel (Ancho)
+    private void generaPanelResultado(){
+        
+        //Calculamos el Numero de Columnas
+        int columRes = (numObjetos + 1) / 2;
+        
+        //Inicializamos las Posiciones por Defecto
+        int posResultX = MARGEN_BTN + 1;
+        int posResultY = MARGEN_BTN + 1;
+
+        //Inicializamos las Matrices
+        matrizResult  = new JLabel[NUM_FILAS][numObjetos];
+        
+        //Inicializamos el Panel
+        jPanelResult.removeAll(); 
+        
+        //Generamos todos los Label del Resultado
+        for (int filas = 0; filas < NUM_FILAS; filas++) {
+            for (int colum = 0; colum < numObjetos; colum++) {
+                //Nuevo Label
+                matrizResult [filas][colum] = new JLabel();
+                matrizResult [filas][colum].setSize(ANCHO_RES, ALTO_RES);
+                matrizResult [filas][colum].setLocation(posResultX , posResultY);
+                matrizResult [filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/check_verde.png")));
+
+                //Añadimos los Botones a sus Paneles
+                jPanelResult.add(matrizResult[filas][colum]);
+
+                //Si ha llegado a la Mitad
+                if ((colum + 1) == columRes) {
+                    //Reposicionamos la Posicion X al Inicio
+                    posResultX = MARGEN_BTN + 1;
+                    
+                    //Bajamos un Nivel la Posicion Y
+                    posResultY = posResultY + ALTO_RES + MARGEN_RES;
+                } 
+                else {
+                    //Aumentamos distancia en la Posicion X
+                    posResultX = posResultX + ANCHO_RES + MARGEN_RES;
+                }
+            }
+            //Reposicionamos la Posicion X al Inicio
+            posResultX  = MARGEN_BTN + 1;
+
+            //Aumentamos distancia en la Posicion Y
+            posResultY  = posResultY  + ALTO_RES + MARGEN_BTN;
+        }
+        //Refrescamos el Panel
+        jPanelResult.repaint();
     }
 
     /**
@@ -62,6 +267,13 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jBNuevaPartida = new javax.swing.JButton();
+        jPanelSelector = new javax.swing.JPanel();
+        jPanelJugada = new javax.swing.JPanel();
+        jPanelResult = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         jPOpciones = new javax.swing.JPanel();
         jChkNivAuto = new javax.swing.JCheckBox();
         jCBLongitud = new javax.swing.JComboBox();
@@ -69,17 +281,99 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jCBDuplicados = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
         jCBObjetos = new javax.swing.JComboBox();
-        jBNuevaPartida = new javax.swing.JButton();
         jBColores = new javax.swing.JButton();
         jBIconos = new javax.swing.JButton();
         jBLetras = new javax.swing.JButton();
         jBNumeros = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jPanelSelector = new javax.swing.JPanel();
-        jPanelBotones = new javax.swing.JPanel();
-        jPanelResult = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTabbedPane2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jBNuevaPartida.setText("Nueva Partida");
+        jBNuevaPartida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBNuevaPartidaActionPerformed(evt);
+            }
+        });
+
+        jPanelSelector.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanelSelector.setPreferredSize(new java.awt.Dimension(48, 562));
+
+        javax.swing.GroupLayout jPanelSelectorLayout = new javax.swing.GroupLayout(jPanelSelector);
+        jPanelSelector.setLayout(jPanelSelectorLayout);
+        jPanelSelectorLayout.setHorizontalGroup(
+            jPanelSelectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 44, Short.MAX_VALUE)
+        );
+        jPanelSelectorLayout.setVerticalGroup(
+            jPanelSelectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 453, Short.MAX_VALUE)
+        );
+
+        jPanelJugada.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanelJugadaLayout = new javax.swing.GroupLayout(jPanelJugada);
+        jPanelJugada.setLayout(jPanelJugadaLayout);
+        jPanelJugadaLayout.setHorizontalGroup(
+            jPanelJugadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 273, Short.MAX_VALUE)
+        );
+        jPanelJugadaLayout.setVerticalGroup(
+            jPanelJugadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jPanelResult.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanelResultLayout = new javax.swing.GroupLayout(jPanelResult);
+        jPanelResult.setLayout(jPanelResultLayout);
+        jPanelResultLayout.setHorizontalGroup(
+            jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 57, Short.MAX_VALUE)
+        );
+        jPanelResultLayout.setVerticalGroup(
+            jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jBNuevaPartida)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(106, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jBNuevaPartida)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanelSelector, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+                            .addComponent(jPanelJugada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(8, 8, 8))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
+        );
+
+        jTabbedPane2.addTab("Juego", jPanel1);
 
         jPOpciones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -102,21 +396,19 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jLabel2.setText("Longitud:");
 
         jCBDuplicados.setText("Permitir Duplicados");
+        jCBDuplicados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBDuplicadosActionPerformed(evt);
+            }
+        });
 
-        jLabel3.setText("Num. Objetos");
+        jLabel3.setText("Num. Objetos:");
 
         jCBObjetos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "6", "7", "8", "9", "10" }));
         jCBObjetos.setEnabled(false);
         jCBObjetos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCBObjetosActionPerformed(evt);
-            }
-        });
-
-        jBNuevaPartida.setText("Nueva Partida");
-        jBNuevaPartida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBNuevaPartidaActionPerformed(evt);
             }
         });
 
@@ -156,6 +448,10 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
         jLabel1.setText("Seleccione Tipo de Iconos:");
 
+        jButton1.setText("Puntuaciones");
+
+        jButton2.setText("Ayuda");
+
         javax.swing.GroupLayout jPOpcionesLayout = new javax.swing.GroupLayout(jPOpciones);
         jPOpciones.setLayout(jPOpcionesLayout);
         jPOpcionesLayout.setHorizontalGroup(
@@ -163,6 +459,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             .addGroup(jPOpcionesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCBDuplicados)
                     .addGroup(jPOpcionesLayout.createSequentialGroup()
                         .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -171,123 +468,85 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                         .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jChkNivAuto)
+                    .addComponent(jLabel1)
                     .addGroup(jPOpcionesLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCBLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCBObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jBNuevaPartida))
+                        .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jCBLongitud, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jCBObjetos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPOpcionesLayout.createSequentialGroup()
-                        .addComponent(jChkNivAuto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCBDuplicados))
-                    .addComponent(jLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2)))
+                .addContainerGap(322, Short.MAX_VALUE))
         );
         jPOpcionesLayout.setVerticalGroup(
             jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPOpcionesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jChkNivAuto)
-                    .addComponent(jCBDuplicados))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jChkNivAuto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCBDuplicados)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jCBLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCBLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jCBObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBNuevaPartida))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jCBObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBColores, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBIconos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jBLetras, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jBNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(27, 27, 27))
+                .addGap(18, 18, 18)
+                .addGroup(jPOpcionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addContainerGap(287, Short.MAX_VALUE))
         );
 
-        jPanelSelector.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanelSelector.setPreferredSize(new java.awt.Dimension(48, 562));
-
-        javax.swing.GroupLayout jPanelSelectorLayout = new javax.swing.GroupLayout(jPanelSelector);
-        jPanelSelector.setLayout(jPanelSelectorLayout);
-        jPanelSelectorLayout.setHorizontalGroup(
-            jPanelSelectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 44, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanelSelectorLayout.setVerticalGroup(
-            jPanelSelectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 453, Short.MAX_VALUE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jPanelBotones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        javax.swing.GroupLayout jPanelBotonesLayout = new javax.swing.GroupLayout(jPanelBotones);
-        jPanelBotones.setLayout(jPanelBotonesLayout);
-        jPanelBotonesLayout.setHorizontalGroup(
-            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 273, Short.MAX_VALUE)
-        );
-        jPanelBotonesLayout.setVerticalGroup(
-            jPanelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jPanelResult.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        javax.swing.GroupLayout jPanelResultLayout = new javax.swing.GroupLayout(jPanelResult);
-        jPanelResult.setLayout(jPanelResultLayout);
-        jPanelResultLayout.setHorizontalGroup(
-            jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 69, Short.MAX_VALUE)
-        );
-        jPanelResultLayout.setVerticalGroup(
-            jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        jTabbedPane2.addTab("Opciones", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(517, Short.MAX_VALUE))
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(7, 7, 7)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelSelector, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
-                .addGap(0, 73, Short.MAX_VALUE))
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 23, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jChkNivAutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jChkNivAutoActionPerformed
-        
         //Si ponemos el Nivel Automático Desactivamos el ComboBox
         if (jChkNivAuto.isSelected()) {
             jCBLongitud.setEnabled(false);
@@ -296,298 +555,58 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             jCBLongitud.setEnabled(true);
             jCBObjetos.setEnabled(true);
         }
+        //Queda pendiente establecer los Niveles
     }//GEN-LAST:event_jChkNivAutoActionPerformed
 
-
-    
-    
-    private void actualizaSelector(){
-        
-        //Obtenemos el Numero de Objetos Seleccionados
-        numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
-        longitud   = Integer.valueOf(jCBLongitud.getSelectedItem().toString());
-        
-        //Inicializamos Matriz
-        solucion = new int[longitud];
-        
-        //Si hay mas Filas que Objetos -> Permitimos Duplicados
-        if (longitud > numObjetos) {
-            jCBDuplicados.setSelected(true);
-            jCBDuplicados.setEnabled(false);
-        } else {
-            jCBDuplicados.setEnabled(true);
-        }
-    }
-    
     private void jCBObjetosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBObjetosActionPerformed
-        actualizaSelector();
-
+        //Valida si hay alguna incongluencia en las Opciones
+        validaOpciones();
     }//GEN-LAST:event_jCBObjetosActionPerformed
 
     private void jBNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartidaActionPerformed
-        
-        //Generamos una Nueva Partida
-        generaNuevaPartida();
-        
-        //
-        actualizaPaneles();        
+
+        //Recuperamos las Opciones que se han marcado
+        recuperaOpciones();
+
+        //Generamos una nueva secuencia de Numeros Aleatorios
+        generaNumerosAleatorios();       
+
+        //Generamos el Panel Selector con Iconos de Gatos
+        generaPanelSelector(OBJT_GATO);
+
+        //Generamos el Panel del Jugador
+        generaPanelJugada();
+
+        //Generamos el Panel del Resultado
+        generaPanelResultado();
     }//GEN-LAST:event_jBNuevaPartidaActionPerformed
 
     private void jCBLongitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBLongitudActionPerformed
-        actualizaSelector();
+        //Valida si hay alguna incongluencia en las Opciones
+        validaOpciones();
     }//GEN-LAST:event_jCBLongitudActionPerformed
     private void jBColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBColoresActionPerformed
         //Establecemos los Colores como Tipo de Objeto
-        generaSelector(OBJT_COLOR);
+        generaPanelSelector(OBJT_COLOR);
     }//GEN-LAST:event_jBColoresActionPerformed
     private void jBIconosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIconosActionPerformed
         //Establecemos los Iconos como Tipo de Objeto
-        generaSelector(OBJT_GATO);
+        generaPanelSelector(OBJT_GATO);
     }//GEN-LAST:event_jBIconosActionPerformed
     private void jBLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLetrasActionPerformed
         //Establecemos las Letras como Tipo de Objeto
-        generaSelector(OBJT_LETRA);
+        generaPanelSelector(OBJT_LETRA);
     }//GEN-LAST:event_jBLetrasActionPerformed
     private void jBNumerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNumerosActionPerformed
         //Establecemos los Numeros como Tipo de Objeto
-        generaSelector(OBJT_NUMER);
+        generaPanelSelector(OBJT_NUMER);
     }//GEN-LAST:event_jBNumerosActionPerformed
-    private void generaSelector(String tipoObjeto){
-        //Obtenemos el Numero de Columnas y Filas
-        numObjetos = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
 
-        int posBotonesX = MARGEN_BTN + 1;
-        int posBotonesY = MARGEN_BTN + 1;
-        
-        //Inicializamos las Matrices
-        matrizSelect = new JButton[numObjetos];
-        
-        //Inicializamos el Panel
-        jPanelSelector.removeAll();        
-        
-        //Generamos todos los Botones del Panel de Botones
-        for (int posicion = 0; posicion < numObjetos; posicion++) {
-            //Nuevo boton
-            matrizSelect[posicion] = new JButton();
-            matrizSelect[posicion].setSize(ANCHO_BTN, ALTO_BTN);
-            matrizSelect[posicion].setLocation(posBotonesX, posBotonesY);
-            matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (posicion + 1) + ".png")));
+    private void jCBDuplicadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBDuplicadosActionPerformed
+        //Valida si hay alguna incongluencia en las Opciones
+        validaOpciones();
+    }//GEN-LAST:event_jCBDuplicadosActionPerformed
 
-            //Añadimos los Botones a sus Paneles
-            jPanelSelector.add(matrizSelect[posicion]);
-
-            //Incrementamos X
-            posBotonesY = posBotonesY + ANCHO_BTN + MARGEN_BTN;
-        }
-        //Refrescamos el Panel
-        jPanelSelector.repaint();
-    }
-
-
-    
-    private void generaNuevaPartida()
-    {
-        //Generamos la Temperatura Aleatoria Inicial
-        Random generadorNum = new Random();        
-        int contador = 0;        
-        seleccionados = new int [longitud];
-        
-        //Generamos los Numeros Aleatorios Definidos en 'numFilas'
-        while (contador < longitud){
-            //Generamos el Numero Aleatorio
-            int numAleatorio = generadorNum.nextInt(numObjetos) + 1;
-            
-            //Si Estan Permitidos los Duplicados
-            if (jCBDuplicados.isSelected()){     
-                solucion[contador]=numAleatorio;
-                contador++;
-            }
-            //Si no Estan Permitidos los Duplicados
-            else if (!estaRepetido(numAleatorio)){  
-                solucion[contador]=numAleatorio;
-                contador++;
-            }
-        }
-    }
-    
-    private boolean estaRepetido(int numAleatorio){
-        int longSolucion = solucion.length;
-        
-        for (int x=0; x < longSolucion; x++){
-            if (solucion[x] == numAleatorio)
-                return true;
-        }
-        return false;
-    }
-    
-    
-    ////////////////////////////////////////
-    private void actualizaPaneles(){
-        
-        //Obtenemos el Numero de Columnas y Filas
-        int numCol = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
-        
-        //Inicializamos el Panel de los Botones
-        inicializaPanelBotones(numCol);
-        
-        //Inicializamos el Panel del Resultado
-        inicializaPanelResultado(numCol);
-        
-        //Inicializamos el Panel Superior
-        inicializaPanelSuperior();
-    }
-    private void inicializaPanelBotones(int numCol){
-        
-        //Añadimos los Botones al Panel de Botones
-        generaBotones();
-        
-        //Cambiamos el Tamaño del Panel de Botones
-        resizePanelBotones(numCol); 
-    }
-    //Cambiamos el Tamaño del Panel de Botones
-    private void resizePanelBotones(int numCol){
-        //Establecemos el Tamaño del Panel Botones
-        int anchoPanel = (MARGEN_BTN + 2) + ((ANCHO_BTN + MARGEN_BTN) * numCol);
-        int altoPanel  = (MARGEN_BTN + 2) + ((ALTO_BTN  + MARGEN_BTN) * NUM_FILAS);
-        System.out.println("Tamaño Panel Botones - Ancho: " + anchoPanel + " - Alto: " + altoPanel);
-        jPanelBotones.setSize(anchoPanel, altoPanel);
-    }
-
-    private void inicializaPanelResultado(int numCol){
-        
-        //Reposicionamos el Panel Resultado
-        posicionaPanelResultado();
-        
-        //Cambiamos el Tamaño del Panel Resultado
-        resizePanelResultado(numCol);
-        
-        //Añadimos los label al Panel de Resultado
-        generaLabel();
-    }
-    //Reposiciona el Panel del Resultado
-    private void posicionaPanelResultado(){
-        int posPanResX = jPanelBotones.getX() + jPanelBotones.getWidth() + MARGEN_BTN;
-        jPanelResult.setLocation(posPanResX, jPanelResult.getY());
-    }
-    //Cambiamos el Tamaño del Panel Resultado
-    private void resizePanelResultado(int numCol){
-        int columRes = (numCol + 1) / 2;        
-    
-        //Establecemos el Tamaño del Panel Resultado
-        int anchoPanel = (MARGEN_BTN * 2) + ((ANCHO_RES + MARGEN_RES) * columRes);
-        int altoPanel  = (MARGEN_BTN + 2) + ((ALTO_BTN  + MARGEN_BTN) * NUM_FILAS);
-        System.out.println("Tamaño Panel Resultado - Ancho: " + anchoPanel + " - Alto: " + altoPanel);
-        jPanelResult.setSize(anchoPanel, altoPanel);
-    }
-
-    private void inicializaPanelSuperior(){        
-        //Cambiamos el Tamaño del Panel Superior
-        resizePanelSuperior();
-    }
-    //Cambiamos el Tamaño del Panel Superior
-    private void resizePanelSuperior(){
-        
-        //Establecemos el Tamaño del Panel Superior
-        int anchoPanel = jPanelResult.getX() + jPanelResult.getWidth()  + MARGEN_BTN;
-        int altoPanel  = jPanelResult.getY() + jPanelResult.getHeight() + MARGEN_BTN;
-        System.out.println("Tamaño Panel Superior - Ancho: " + anchoPanel + " - Alto: " + altoPanel);
-        jPanelSelector.setSize(anchoPanel, altoPanel);
-    } 
-
-
-    
-    
-    private void generaBotones(){
-        
-        //Obtenemos el Numero de Columnas y Filas
-        int numColumnas = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
-        
-        int posBotonesX = MARGEN_BTN + 1;
-        int posBotonesY = MARGEN_BTN + 1;
-
-        //Inicializamos las Matrices
-        matrizUsuario = new JLabel[NUM_FILAS][numColumnas];
-        
-        //Inicializamos el Panel
-        jPanelBotones.removeAll(); 
-        
-        //Generamos todos los Botones del Panel de Botones
-        for (int filas = 0; filas < NUM_FILAS; filas++) {
-            for (int colum = 0; colum < numColumnas; colum++) {
-                //Nuevo boton
-                matrizUsuario[filas][colum] = new JLabel();
-                matrizUsuario[filas][colum].setSize(ANCHO_BTN, ALTO_BTN);
-                matrizUsuario[filas][colum].setLocation(posBotonesX, posBotonesY);
-                matrizUsuario[filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
-                
-                //Añadimos los Botones a sus Paneles
-                jPanelBotones.add(matrizUsuario[filas][colum]);
-
-                //Incrementamos X
-                posBotonesX = posBotonesX + ANCHO_BTN + MARGEN_BTN;
-            }
-            //Inicializamos Variables
-            posBotonesX = MARGEN_BTN + 1;
-
-            //Incrementamos Y
-            posBotonesY = posBotonesY + ALTO_BTN + MARGEN_BTN;
-        }
-        //Refrescamos el Panel
-        jPanelBotones.repaint();
-     }
-    
-    private void generaLabel(){
-        
-        //Obtenemos el Numero de Columnas y Filas
-        int numColumnas = Integer.valueOf(jCBObjetos.getSelectedItem().toString());
-        int columRes    = (numColumnas + 1) / 2;
-        
-        int posResultX  = MARGEN_BTN + 1;
-        int posResultY  = MARGEN_BTN + 1;
-
-        //Inicializamos las Matrices
-        matrizResult  = new JLabel[NUM_FILAS][numColumnas];
-        
-        //Inicializamos el Panel
-        jPanelResult.removeAll(); 
-        
-        //Generamos todos los Label del Resultado
-        for (int filas = 0; filas < NUM_FILAS; filas++) {
-            for (int colum = 0; colum < numColumnas; colum++) {
-                //Nuevo Label
-                matrizResult [filas][colum] = new JLabel();
-                matrizResult [filas][colum].setSize(ANCHO_RES, ALTO_RES);
-                matrizResult [filas][colum].setLocation(posResultX , posResultY);
-                matrizResult [filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/check_verde.png")));
-
-                //Añadimos los Botones a sus Paneles
-                jPanelResult.add(matrizResult[filas][colum]);
-
-                //Si ha llegado a la Mitad
-                if ((colum + 1) == columRes) {
-                    //Reposicionamos la Posicion X al Inicio
-                    posResultX = MARGEN_BTN + 1;
-                    
-                    //Bajamos un Nivel la Posicion Y
-                    posResultY = posResultY + ALTO_RES + MARGEN_RES;
-                } 
-                else {
-                    //Aumentamos distancia en la Posicion X
-                    posResultX = posResultX + ANCHO_RES + MARGEN_RES;
-                }
-            }
-            //Reposicionamos la Posicion X al Inicio
-            posResultX  = MARGEN_BTN + 1;
-
-            //Aumentamos distancia en la Posicion Y
-            posResultY  = posResultY  + ALTO_RES + MARGEN_BTN;
-        }
-        //Refrescamos el Panel
-        jPanelResult.repaint();
-    }
-    ////////////////////////////////////////
-
-    
     /**
      * @param args the command line arguments
      */
@@ -629,6 +648,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private javax.swing.JButton jBLetras;
     private javax.swing.JButton jBNuevaPartida;
     private javax.swing.JButton jBNumeros;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCBDuplicados;
     private javax.swing.JComboBox jCBLongitud;
     private javax.swing.JComboBox jCBObjetos;
@@ -637,8 +658,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPOpciones;
-    private javax.swing.JPanel jPanelBotones;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanelJugada;
     private javax.swing.JPanel jPanelResult;
     private javax.swing.JPanel jPanelSelector;
+    private javax.swing.JTabbedPane jTabbedPane2;
     // End of variables declaration//GEN-END:variables
 }
