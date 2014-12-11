@@ -135,7 +135,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     //Genera el Panel Selector
     //Añade Dinamicamente los Botones + Cambia el Tamaño del Panel (Alto)
-    private void generaPanelSelector(String tipoObjeto){
+    public void generaPanelSelector(String tipoObjeto){
 
         //Inicializamos las Posiciones por Defecto
         int posBotonesX = MARGEN_BTN + 1;
@@ -290,6 +290,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MasterMind");
 
         jTabbedPane2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
