@@ -260,6 +260,8 @@ public class VentanaOpciones extends javax.swing.JDialog {
         if (this.jChkNivAuto.isSelected()) {
             jCBLongitud.setEnabled(false);
             jCBObjetos.setEnabled(false);
+            jCBLongitud.setSelectedIndex(0);
+            jCBObjetos.setSelectedIndex(0);
         } else {
             jCBLongitud.setEnabled(true);
             jCBObjetos.setEnabled(true);
@@ -279,11 +281,21 @@ public class VentanaOpciones extends javax.swing.JDialog {
         //Inicializamos Variable
         setIndCambios(false);
         
+        //Modificamos el Valor del Indicador de Modo Automatico al Anterior
+        jChkNivAuto.setSelected(isAutomatico());
         
-        //Modificamos el Valor del Indicador de Modo Automatico
-        jChkNivAuto.set
-        setAutomatico(jChkNivAuto.isSelected());
+        //Modificamos el Valor del Indicador de Duplicados al Anterior
+        jCBDuplicados.setSelected(isDuplicados());
 
+        //Modificamos el Valor de la Longitud al Anterior
+        jCBLongitud.setSelectedIndex(getLongitud() - 3);        
+        
+        //Modificamos el Valor de Numero de Objetos al Anterior
+        jCBObjetos.setSelectedIndex(getNumObjetos() - 6);
+        
+        //Modificamos el Valor del Tipo de Objeto al Anterior
+        setTipObjAux(getTipObjeto());
+        
         //Salimos de la Ventan Modal
         this.dispose();
     }//GEN-LAST:event_jBCancelarActionPerformed
@@ -417,7 +429,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     /**
      * @param automatico the automatico to set
      */
-    public void setAutomatico(boolean automatico) {
+    private void setAutomatico(boolean automatico) {
         this.automatico = automatico;
     }
 
@@ -431,7 +443,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     /**
      * @param duplicados the duplicados to set
      */
-    public void setDuplicados(boolean duplicados) {
+    private void setDuplicados(boolean duplicados) {
         this.duplicados = duplicados;
     }
 
@@ -445,7 +457,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     /**
      * @param longitud the longitud to set
      */
-    public void setLongitud(int longitud) {
+    private void setLongitud(int longitud) {
         this.longitud = longitud;
     }
 
@@ -459,7 +471,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     /**
      * @param numObjetos the numObjetos to set
      */
-    public void setNumObjetos(int numObjetos) {
+    private void setNumObjetos(int numObjetos) {
         this.numObjetos = numObjetos;
     }
 
@@ -473,7 +485,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     /**
      * @param tipObjeto the tipObjeto to set
      */
-    public void setTipObjeto(String tipObjeto) {
+    private void setTipObjeto(String tipObjeto) {
         this.tipObjeto = tipObjeto;
     }
 
@@ -487,7 +499,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     /**
      * @param tipObjAux the tipObjAux to set
      */
-    public void setTipObjAux(String tipObjAux) {
+    private void setTipObjAux(String tipObjAux) {
         this.tipObjAux = tipObjAux;
     }
 
@@ -501,7 +513,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     /**
      * @param indCambios the indCambios to set
      */
-    public void setIndCambios(boolean indCambios) {
+    private void setIndCambios(boolean indCambios) {
         this.indCambios = indCambios;
     }
 
