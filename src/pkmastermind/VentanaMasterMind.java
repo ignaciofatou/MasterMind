@@ -8,6 +8,7 @@ package pkmastermind;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -17,6 +18,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
     //Declaramos la Ventana Modal
     VentanaOpciones opcModal = new VentanaOpciones(this, true);
+    
+    //Declaramos los 3 Nuevos Paneles
+    JPanel jPanelSelectorAux = new JPanel();
+    JPanel jPanelJugadaAux   = new JPanel();
+    JPanel jPanelResultAux   = new JPanel();
     
     int[] numerosGenerados;
     int[] numerosSeleccionados;
@@ -44,15 +50,28 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         
         //Generamos una nueva secuencia de Numeros Aleatorios
         generaNumerosAleatorios();       
+        
+        incluyePaneles();
 
         //Generamos el Panel Selector con Iconos de Gatos
-        generaPanelSelector();
+        //generaPanelSelector();
         
         //Generamos el Panel del Jugador
-        generaPanelJugada();
+        //generaPanelJugada();
         
         //Generamos el Panel del Resultado
-        generaPanelResultado();
+        //generaPanelResultado();
+    }
+    
+    private void incluyePaneles(){
+        jPanelSelectorAux.setLocation(400, 50);
+        jPanelSelectorAux.setSize(50, 50);
+        jPanelSelectorAux.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        
+        this.add(jPanelSelectorAux);        
+        this.add(jPanelJugadaAux);
+        this.add(jPanelResultAux);
+        this.repaint();
     }
 
     //Generamos una nueva secuencia de Numeros Aleatorios
@@ -239,8 +258,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Aumentamos distancia en la Posicion Y
             posResultY  = posResultY  + ALTO_RES + MARGEN_BTN;
         }
-        int posicionX = jPanelJugada.getX() + jPanelJugada.getWidth();
-        jPanelResult.setAlignmentX(posicionX + 3);
+        //Posicionamos el Panel de Resultado
+        int posicionX = jPanelJugada.getX() + jPanelJugada.getWidth() + MARGEN_BTN;
+        jPanelResult.setLocation(posicionX, jPanelResult.getY());
         
         //Refrescamos el Panel
         jPanelResult.repaint();
@@ -329,14 +349,14 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jBNuevaPartida)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBOpciones)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 154, Short.MAX_VALUE)
-                .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(197, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,10 +368,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanelSelector, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                        .addComponent(jPanelJugada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)))
-                .addContainerGap(110, Short.MAX_VALUE))
+                    .addComponent(jPanelSelector, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+                    .addComponent(jPanelJugada, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         pack();
