@@ -8,7 +8,6 @@ package pkmastermind;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  *
@@ -19,26 +18,33 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     //Declaramos la Ventana Modal
     VentanaOpciones opcModal = new VentanaOpciones(this, true);
     
-    //Declaramos los 3 Nuevos Paneles
-    JPanel jPanelSelectorAux = new JPanel();
-    JPanel jPanelJugadaAux   = new JPanel();
-    JPanel jPanelResultAux   = new JPanel();
-    
     int[] numerosGenerados;
     int[] numerosSeleccionados;
-    int seleccion;
+    int   seleccion;
+    
+    //PARA GUARDAR EL TAMAÑO INICIAL Y POSICION DE LOS PANELES
+    private int altoPanelSelector;
+    private int anchoPanelSelector;
+    private int altoPanelJugada;
+    private int anchoPanelJugada;
+    private int altoPanelResult;
+    private int anchoPanelResult;
+    private int PosX_Result;
+    private int PosY_Result;
     
     ///
+    JButton matrizSelect [];
     JLabel  matrizUsuario[][];
     JLabel  matrizResult [][];
-    JButton matrizSelect [];
-    final int NUM_FILAS  = 10;
-    final int ANCHO_BTN  = 35;
-    final int ALTO_BTN   = 35;
-    final int MARGEN_BTN = 5;
-    final int ANCHO_RES  = 19;
-    final int ALTO_RES   = 19;
-    final int MARGEN_RES = 2;    
+    
+    final int NUM_FILAS   = 10;
+    final int ANCHO_BTN   = 35;
+    final int ALTO_BTN    = 35;
+    final int MARGEN_BTN  = 5;
+    final int ANCHO_RES   = 17;
+    final int ALTO_RES    = 17;
+    final int MARGEN_RES  = 1;
+    final int MIN_OBJETOS = 6;
     
     public VentanaMasterMind() {
         
@@ -49,30 +55,22 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         //Generamos una nueva secuencia de Numeros Aleatorios
-        generaNumerosAleatorios();       
+        generaNumerosAleatorios();
         
-        incluyePaneles();
-
+        //Guardamos el Tamaño Inicial de los Paneles (Solo se ejecuta una vez)
+        saveSizePosIniPanels();
+        
         //Generamos el Panel Selector con Iconos de Gatos
-        //generaPanelSelector();
+        generaPanelSelector();
         
         //Generamos el Panel del Jugador
-        //generaPanelJugada();
+        generaPanelJugada();
         
         //Generamos el Panel del Resultado
-        //generaPanelResultado();
+        generaPanelResultado();
     }
     
-    private void incluyePaneles(){
-        jPanelSelectorAux.setLocation(400, 50);
-        jPanelSelectorAux.setSize(50, 50);
-        jPanelSelectorAux.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        
-        this.add(jPanelSelectorAux);        
-        this.add(jPanelJugadaAux);
-        this.add(jPanelResultAux);
-        this.repaint();
-    }
+
 
     //Generamos una nueva secuencia de Numeros Aleatorios
     private void generaNumerosAleatorios()
@@ -87,7 +85,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         int contador = 0;
         
         //Inicializamos Matriz para los Numeros Aleatorios que vamos a Generar
-        numerosGenerados     = new int[longitud];
+        numerosGenerados = new int[longitud];
         
         //Inicializamos Matriz para los Numeros Que vamos a Seleccionar (*)
         numerosSeleccionados = new int[longitud];
@@ -120,6 +118,19 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         return false;
     }
     
+    //Guardamos el Tamaño Inicial de los Paneles (Solo se ejecuta una vez)
+    private void saveSizePosIniPanels(){
+        //Guardamos el Tamaño Inicial del Panel
+        altoPanelSelector  = jPanelSelector.getHeight();
+        anchoPanelSelector = jPanelSelector.getWidth();
+        altoPanelJugada    = jPanelJugada.getHeight();
+        anchoPanelJugada   = jPanelJugada.getWidth();
+        altoPanelResult    = jPanelResult.getHeight();
+        anchoPanelResult   = jPanelResult.getWidth();
+        PosX_Result        = jPanelResult.getX();
+        PosY_Result        = jPanelResult.getY();
+    }   
+
     //Genera el Panel Selector
     //Añade Dinamicamente los Botones + Cambia el Tamaño del Panel (Alto)
     private void generaPanelSelector(){
@@ -152,6 +163,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Incrementamos X
             posBotonesY = posBotonesY + ANCHO_BTN + MARGEN_BTN;
         }
+        //Cambiamos el Alto del Panel Selector
+        jPanelSelector.setSize(anchoPanelSelector, posBotonesY + 2);
+        
         //Refrescamos el Panel
         jPanelSelector.repaint();
     }
@@ -196,13 +210,12 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Incrementamos Y
             posBotonesY = posBotonesY + ALTO_BTN + MARGEN_BTN;
         }
-        //Cambiamos el Ancho del Panel
-        jPanelJugada.setSize(posBotonesX + MARGEN_BTN, jPanelJugada.getHeight());
-        System.out.println("Ancho Panel: " + jPanelJugada.getWidth());
-        System.out.println("Alto  Panel: " + jPanelJugada.getHeight());
+        //Cambiamos el Ancho del Panel de Juego        
+        jPanelJugada.setSize(posBotonesX - 1, altoPanelJugada);
+        //System.out.println("Ancho Panel: " + jPanelJugada.getWidth());
+        //System.out.println("Alto  Panel: " + jPanelJugada.getHeight());
 
         //Refrescamos el Panel
-        jPanelJugada.validate();
         jPanelJugada.repaint();
     }
     
@@ -259,11 +272,36 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             posResultY  = posResultY  + ALTO_RES + MARGEN_BTN;
         }
         //Posicionamos el Panel de Resultado
-        int posicionX = jPanelJugada.getX() + jPanelJugada.getWidth() + MARGEN_BTN;
+        int posicionX = jPanelJugada.getX() + jPanelJugada.getWidth() + MARGEN_BTN + 1;
         jPanelResult.setLocation(posicionX, jPanelResult.getY());
+        
+        //Establecemos el Nuevo Tamaño
+        int ancho = (MARGEN_BTN + 1) + (columRes * (ANCHO_RES + MARGEN_RES)) + (MARGEN_BTN + 1) + 1;
+        jPanelResult.setSize(ancho, altoPanelResult);
+
+        //int anchoVentana = posicionX + ancho + MARGEN_BTN + 16;
+        //this.setSize(anchoVentana, this.getHeight());
+        //this.repaint();
+        //System.out.println("Posicion: " + posicionX);
+        //System.out.println("Ancho: " + ancho);
+        //System.out.println("Ancho Completo: " + (posicionX + ancho));
+        
+        
+        
         
         //Refrescamos el Panel
         jPanelResult.repaint();
+        
+
+    }
+    
+    private void changeSizeVentana(){
+        
+        int altoVentana  = this.getHeight();
+        int anchoVentana = jPanelResult.getWidth() + jPanelResult.getX() + MARGEN_BTN;
+        this.setSize(anchoVentana, altoVentana);
+        
+        this.repaint();
     }
 
     /**
@@ -309,7 +347,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         );
         jPanelSelectorLayout.setVerticalGroup(
             jPanelSelectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 406, Short.MAX_VALUE)
+            .addGap(0, 244, Short.MAX_VALUE)
         );
 
         jPanelJugada.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -319,11 +357,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jPanelJugada.setLayout(jPanelJugadaLayout);
         jPanelJugadaLayout.setHorizontalGroup(
             jPanelJugadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 127, Short.MAX_VALUE)
+            .addGap(0, 121, Short.MAX_VALUE)
         );
         jPanelJugadaLayout.setVerticalGroup(
             jPanelJugadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 404, Short.MAX_VALUE)
         );
 
         jPanelResult.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -332,11 +370,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jPanelResult.setLayout(jPanelResultLayout);
         jPanelResultLayout.setHorizontalGroup(
             jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 57, Short.MAX_VALUE)
+            .addGap(0, 45, Short.MAX_VALUE)
         );
         jPanelResultLayout.setVerticalGroup(
             jPanelResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 406, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -349,28 +387,27 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jBNuevaPartida)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBOpciones)))
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addContainerGap(215, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBNuevaPartida)
                     .addComponent(jBOpciones))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelSelector, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                    .addComponent(jPanelJugada, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
-                .addContainerGap(41, Short.MAX_VALUE))
+                    .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanelJugada, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                    .addComponent(jPanelResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         pack();
