@@ -63,7 +63,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
         setTitle("Opciones MasterMind");
 
         jBIconos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/gato_1.png"))); // NOI18N
-        jBIconos.setBorder(null);
+        jBIconos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)));
         jBIconos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBIconosActionPerformed(evt);
@@ -79,7 +79,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
         });
 
         jBLetras.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBLetras.setText("A");
+        jBLetras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/letra_1.png"))); // NOI18N
         jBLetras.setBorder(null);
         jBLetras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,7 +88,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
         });
 
         jBNumeros.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jBNumeros.setText("0");
+        jBNumeros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/numero_1.png"))); // NOI18N
         jBNumeros.setBorder(null);
         jBNumeros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -214,24 +214,61 @@ public class VentanaOpciones extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void setBotonPulsado(String tipoObjeto){
+        
+        //Por defecto Desactivamos Todos los Bordes
+        jBIconos.setBorder(null);
+        jBColores.setBorder(null);
+        jBLetras.setBorder(null);
+        jBNumeros.setBorder(null);
+        
+        //Activamos solo el Borde del que hemos pulsado
+        switch(tipoObjeto){
+            case OBJT_GATO:
+                jBIconos.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 255), 1, true));
+                break;
+            case OBJT_COLOR:
+                jBColores.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 255), 1, true));
+                break;
+            case OBJT_LETRA:
+                jBLetras.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 255), 1, true));
+                break;
+            case OBJT_NUMER:
+                jBNumeros.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 255), 1, true));
+                break;
+        }
+    }
+    
     private void jBIconosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIconosActionPerformed
         //Establecemos los Iconos como Tipo de Objeto
         setTipObjAux(OBJT_GATO);
+        
+        //Activamos el Borde del que hemos pulsado
+        setBotonPulsado(OBJT_GATO);
     }//GEN-LAST:event_jBIconosActionPerformed
 
     private void jBColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBColoresActionPerformed
         //Establecemos los Colores como Tipo de Objeto
         setTipObjAux(OBJT_COLOR);
+
+       //Activamos el Borde del que hemos pulsado
+        setBotonPulsado(OBJT_COLOR);
     }//GEN-LAST:event_jBColoresActionPerformed
 
     private void jBLetrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLetrasActionPerformed
         //Establecemos las Letras como Tipo de Objeto
         setTipObjAux(OBJT_LETRA);
+
+       //Activamos el Borde del que hemos pulsado
+        setBotonPulsado(OBJT_LETRA);
     }//GEN-LAST:event_jBLetrasActionPerformed
 
     private void jBNumerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNumerosActionPerformed
         //Establecemos los Numeros como Tipo de Objeto
         setTipObjAux(OBJT_NUMER);
+
+       //Activamos el Borde del que hemos pulsado
+        setBotonPulsado(OBJT_NUMER);
     }//GEN-LAST:event_jBNumerosActionPerformed
 
     private void jCBObjetosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBObjetosActionPerformed
@@ -295,6 +332,9 @@ public class VentanaOpciones extends javax.swing.JDialog {
         
         //Modificamos el Valor del Tipo de Objeto al Anterior
         setTipObjAux(getTipObjeto());
+        
+       //Activamos el Borde del que hemos pulsado
+        setBotonPulsado(getTipObjeto());
         
         //Salimos de la Ventan Modal
         this.dispose();
