@@ -5,6 +5,9 @@
  */
 package pkmastermind;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,7 +23,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     int[] numerosGenerados;
     int[] numerosSeleccionados;
-    int   seleccion;
+    int   seleccion  = 0;
+    int   filaActual = 0;
     
     //PARA GUARDAR EL TAMAÑO INICIAL Y POSICION DE LOS PANELES
     private int altoPanelSelector;
@@ -35,7 +39,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     ///
     JButton matrizSelect [];
-    JLabel  matrizUsuario[][];
+    JLabel  matrizJugada [][];
     JLabel  matrizResult [][];
     
     final int NUM_FILAS   = 10;
@@ -89,7 +93,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         numerosGenerados = new int[longitud];
         
         //Inicializamos Matriz para los Numeros Que vamos a Seleccionar (*)
-        numerosSeleccionados = new int[longitud];
+        reiniciaArraySeleccionados(longitud);
         
         //Generamos los Numeros Aleatorios Definidos en 'numFilas'
         while (contador < longitud){
@@ -99,7 +103,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Si Estan Permitidos los Duplicados
             if (duplicados){     
                 numerosGenerados[contador]=numAleatorio;
-                contador++;
+                contador++;                
             }
             //Si no Estan Permitidos los Duplicados
             else if (!estaRepetido(numAleatorio)){  
@@ -108,6 +112,17 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         }
     }
+    
+    //Reinicia la fila que hemos seleccionado
+    private void reiniciaArraySeleccionados(int longitud){
+        //Inicializamos Matriz para los Numeros Que vamos a Seleccionar
+        numerosSeleccionados = new int[longitud];
+        
+        for (int x=0; x<longitud; x++){
+            numerosSeleccionados[x]=-1;
+        }
+    }    
+    
     //Comprueba si el Numero ya está Repetido
     private boolean estaRepetido(int numAleatorio){
         int longSolucion = numerosGenerados.length;
@@ -155,22 +170,58 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         for (int posicion = 0; posicion < numObjetos; posicion++) {
             //Nuevo boton
             matrizSelect[posicion] = new JButton();
-            matrizSelect[posicion].setSize(ANCHO_BTN, ALTO_BTN);
-            matrizSelect[posicion].setLocation(posBotonesX, posBotonesY);
+            matrizSelect[posicion].setActionCommand(String.valueOf(posicion));
+            matrizSelect[posicion].setBounds(posBotonesX, posBotonesY, ANCHO_BTN, ALTO_BTN);
             matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (posicion + 1) + ".png")));
 
+            //Añadimos el evento al boton
+            addEventoBtnSelector(posicion);
+            
             //Añadimos los Botones a sus Paneles
             jPanelSelector.add(matrizSelect[posicion]);
 
             //Incrementamos X
             posBotonesY = posBotonesY + ANCHO_BTN + MARGEN_BTN;
-        }
+        }        
         //Cambiamos el Alto del Panel Selector
         jPanelSelector.setSize(anchoPanelSelector, posBotonesY + 2);
         
         //Refrescamos el Panel
         jPanelSelector.repaint();
     }
+    
+    //Añade el Evento a la Matriz de Botones del Panel Selector
+    private void addEventoBtnSelector(int posicion){
+        matrizSelect[posicion].addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                //Obtenemos el Numero del Boton que se ha pulsado
+                JButton evento = (JButton)evt.getSource();                
+                int btnPulsado = Integer.valueOf(evento.getActionCommand());
+                incluyeSeleccion(btnPulsado);
+            }
+        });
+    }    
+    //Guarda y Ordena en una Matriz el Boton que hemos Pulsado
+    private void incluyeSeleccion(int btnPulsado){
+        int longitud = opcModal.getLongitud();
+        
+        for (int x=0; x<longitud; x++){
+            if (numerosSeleccionados[x]==-1){
+                numerosSeleccionados[x]=btnPulsado;
+                setIconoSeleccionado(x, btnPulsado);
+                break;
+            }
+        }
+    }
+    private void setIconoSeleccionado(int posicion, int btnPulsado){
+        //Obtenemos el Tipo de Icono con el que estamos Jugando
+        String tipoObjeto = opcModal.getTipObjeto();
+        
+        //Mostramos en el Panel de la Jugada el Icono Seleccionado
+        matrizJugada[filaActual][posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (btnPulsado + 1) + ".png")));
+    }
+
+    
     
     //Genera el Panel de la Jugada
     //Añade Dinamicamente los Label + Reposiciona el Panel + 
@@ -185,7 +236,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         int posBotonesY = MARGEN_BTN + 1;
 
         //Inicializamos las Matrices
-        matrizUsuario = new JLabel[NUM_FILAS][longitud];
+        matrizJugada = new JLabel[NUM_FILAS][longitud];
         
         //Inicializamos el Panel
         jPanelJugada.removeAll(); 
@@ -198,13 +249,12 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
             for (int colum = 0; colum < longitud; colum++) {
                 //Nuevo boton
-                matrizUsuario[filas][colum] = new JLabel();
-                matrizUsuario[filas][colum].setSize(ANCHO_BTN, ALTO_BTN);
-                matrizUsuario[filas][colum].setLocation(posBotonesX, posBotonesY);
-                matrizUsuario[filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
+                matrizJugada[filas][colum] = new JLabel();
+                matrizJugada[filas][colum].setBounds(posBotonesX, posBotonesY, ANCHO_BTN, ALTO_BTN);
+                matrizJugada[filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
                 
                 //Añadimos los Botones a sus Paneles
-                jPanelJugada.add(matrizUsuario[filas][colum]);
+                jPanelJugada.add(matrizJugada[filas][colum]);
 
                 //Incrementamos X
                 posBotonesX = posBotonesX + ANCHO_BTN + MARGEN_BTN;
@@ -247,8 +297,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             for (int colum = 0; colum < longitud; colum++) {
                 //Nuevo Label
                 matrizResult [filas][colum] = new JLabel();
-                matrizResult [filas][colum].setSize(ANCHO_RES, ALTO_RES);
-                matrizResult [filas][colum].setLocation(posResultX , posResultY);
+                matrizResult [filas][colum].setBounds(posResultX, posResultY, ANCHO_RES, ALTO_RES);
                 matrizResult [filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/check_verde.png")));
 
                 //Añadimos los Botones a sus Paneles
@@ -301,9 +350,10 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     private void changeSizeVentana(){
         
+        //setLayout(null);//Agregado 08/01/2015
         int altoVentana  = this.getHeight();
         int anchoVentana = jPanelResult.getWidth() + jPanelResult.getX() + MARGEN_BTN;
-        this.setSize(anchoVentana, altoVentana);
+        this.setSize(new Dimension(anchoVentana,altoVentana));//Agregado lo del Dimension 08/01/2015
         
         this.repaint();
     }
@@ -431,6 +481,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void jBOpcionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBOpcionesActionPerformed
         
         //Abrimos la Ventana Opciones en Modo Modal
