@@ -272,6 +272,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         }
         //Cambiamos el Ancho del Panel de Juego        
         jPanelJugada.setSize(posBotonesX - 1, altoPanelJugada);
+        jPanelJugada.setMinimumSize(new Dimension(posBotonesX - 1, altoPanelJugada));
+        jPanelJugada.setMaximumSize(new Dimension(posBotonesX - 1, altoPanelJugada));
+        jPanelJugada.setPreferredSize(new Dimension(posBotonesX - 1, altoPanelJugada));
         //System.out.println("Ancho Panel: " + jPanelJugada.getWidth());
         //System.out.println("Alto  Panel: " + jPanelJugada.getHeight());        
 
@@ -384,11 +387,10 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     private void changeSizeVentana(){
         
-        //setLayout(null);//Agregado 08/01/2015
+        setLayout(null);//Agregado 08/01/2015 - soluciona el problema grafico
         int altoVentana  = this.getHeight();
         int anchoVentana = jPanelResult.getWidth() + jPanelResult.getX() + MARGEN_BTN;
-        this.setSize(new Dimension(anchoVentana,altoVentana));//Agregado lo del Dimension 08/01/2015
-        
+        this.setSize(new Dimension(anchoVentana,altoVentana));        
         this.repaint();
     }
 
@@ -535,6 +537,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
             //Generamos el Panel del Resultado
             generaPanelResultado();
+            
+            changeSizeVentana();
         }
     }//GEN-LAST:event_jBOpcionesActionPerformed
 
