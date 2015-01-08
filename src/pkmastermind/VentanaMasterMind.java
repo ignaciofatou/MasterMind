@@ -39,7 +39,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     ///
     JButton matrizSelect [];
-    JLabel  matrizJugada [][];
+    JButton matrizJugada [][];
     JLabel  matrizResult [][];
     
     final int NUM_FILAS   = 10;
@@ -169,12 +169,12 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Generamos todos los Botones del Panel de Botones
         for (int posicion = 0; posicion < numObjetos; posicion++) {
             //Nuevo boton
-            matrizSelect[posicion] = new JButton();
-            matrizSelect[posicion].setActionCommand(String.valueOf(posicion));
+            matrizSelect[posicion] = new JButton();            
             matrizSelect[posicion].setBounds(posBotonesX, posBotonesY, ANCHO_BTN, ALTO_BTN);
             matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (posicion + 1) + ".png")));
 
             //Añadimos el evento al boton
+            matrizSelect[posicion].setActionCommand(String.valueOf(posicion));
             addEventoBtnSelector(posicion);
             
             //Añadimos los Botones a sus Paneles
@@ -213,14 +213,17 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         }
     }
+    //Muestra en el Panel de la Jugada el Icono seleccionado
     private void setIconoSeleccionado(int posicion, int btnPulsado){
         //Obtenemos el Tipo de Icono con el que estamos Jugando
         String tipoObjeto = opcModal.getTipObjeto();
         
         //Mostramos en el Panel de la Jugada el Icono Seleccionado
         matrizJugada[filaActual][posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (btnPulsado + 1) + ".png")));
+        
+        //Activamos el Boton
+        matrizJugada[filaActual][posicion].setEnabled(true);
     }
-
     
     
     //Genera el Panel de la Jugada
@@ -236,7 +239,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         int posBotonesY = MARGEN_BTN + 1;
 
         //Inicializamos las Matrices
-        matrizJugada = new JLabel[NUM_FILAS][longitud];
+        matrizJugada = new JButton[NUM_FILAS][longitud];
         
         //Inicializamos el Panel
         jPanelJugada.removeAll(); 
@@ -249,9 +252,14 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
             for (int colum = 0; colum < longitud; colum++) {
                 //Nuevo boton
-                matrizJugada[filas][colum] = new JLabel();
+                matrizJugada[filas][colum] = new JButton();
                 matrizJugada[filas][colum].setBounds(posBotonesX, posBotonesY, ANCHO_BTN, ALTO_BTN);
                 matrizJugada[filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
+                matrizJugada[filas][colum].setEnabled(false);
+                
+                //Añadimos el evento al boton
+                matrizJugada[filas][colum].setActionCommand(String.valueOf(colum));
+                addEventoBtnJugada(filas, colum);
                 
                 //Añadimos los Botones a sus Paneles
                 jPanelJugada.add(matrizJugada[filas][colum]);
@@ -270,6 +278,32 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Refrescamos el Panel
         jPanelJugada.repaint();
     }
+    //Añade el Evento a la Matriz de Botones del Panel de la Jugada
+    private void addEventoBtnJugada(int fila, int colum){
+        matrizJugada[fila][colum].addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                //Obtenemos el Numero del Boton que se ha pulsado
+                JButton evento = (JButton)evt.getSource();                
+                int btnPulsado = Integer.valueOf(evento.getActionCommand());
+                excluyeSeleccion(btnPulsado);
+            }
+        });
+    }
+    //Guarda y Ordena en una Matriz el Boton que hemos Pulsado
+    private void excluyeSeleccion(int posicion){
+        
+        //Reiniciamos la Posicion Marcada
+        numerosSeleccionados[posicion]=-1;
+        
+        //Reestablece el Boton Pulsado
+        unsetIconoSeleccionado(posicion);
+    }
+    private void unsetIconoSeleccionado(int posicion){
+        //Mostramos en el Panel de la Jugada el Icono Seleccionado
+        matrizJugada[filaActual][posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
+        matrizJugada[filaActual][posicion].setEnabled(false);
+    }
+    
     
     //Genera el Panel del Resultado
     //Añade Dinamicamente los Label + Reposiciona el Panel + 
