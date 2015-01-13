@@ -159,7 +159,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jBNuevaPartida" min="-2" pref="40" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jBNuevaPartida1" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="jBCheck" min="-2" pref="40" max="-2" attributes="0"/>
                   <EmptySpace pref="104" max="32767" attributes="0"/>
                   <Component id="jBOpciones" min="-2" pref="40" max="-2" attributes="0"/>
               </Group>
@@ -169,7 +169,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="jBNuevaPartida" min="-2" pref="40" max="-2" attributes="0"/>
               <Component id="jBOpciones" min="-2" pref="40" max="-2" attributes="0"/>
-              <Component id="jBNuevaPartida1" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
+              <Component id="jBCheck" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -194,14 +194,15 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBOpcionesActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jBNuevaPartida1">
+        <Component class="javax.swing.JButton" name="jBCheck">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/Nueva_Partida.png"/>
+              <Image iconType="3" name="/Imagenes/check2.png"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBNuevaPartida1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBCheckActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

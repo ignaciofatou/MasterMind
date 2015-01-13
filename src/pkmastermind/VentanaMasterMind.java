@@ -38,6 +38,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private int anchoPanelSolucion;
     private int PosX_Result;
     private int PosY_Result;
+    private boolean btnIniciar = true;
     
     ///
     JButton matrizSelect [];
@@ -45,7 +46,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     JLabel  matrizResult [][];
     
     final int ANCHO_VENTANA = 95;
-    final int ALTO_VENTANA  = 517;
+    final int ALTO_VENTANA  = 530;
     final int NUM_FILAS   = 10;
     final int ANCHO_BTN   = 35;
     final int ALTO_BTN    = 35;
@@ -110,14 +111,17 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Si Estan Permitidos los Duplicados
             if (duplicados){     
                 numerosGenerados[contador]=numAleatorio;
+                System.out.print(""+numAleatorio+"-");
                 contador++;                
             }
             //Si no Estan Permitidos los Duplicados
             else if (!estaRepetido(numAleatorio)){  
                 numerosGenerados[contador]=numAleatorio;
+                System.out.print(""+numAleatorio+"-");
                 contador++;
             }
         }
+        System.out.println();
     }
     
     //Reinicia la fila que hemos seleccionado
@@ -179,9 +183,10 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             matrizSelect[posicion] = new JButton();            
             matrizSelect[posicion].setBounds(posBotonesX, posBotonesY, ANCHO_BTN, ALTO_BTN);
             matrizSelect[posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (posicion + 1) + ".png")));
+            matrizSelect[posicion].setEnabled(false);
 
             //Añadimos el evento al boton
-            matrizSelect[posicion].setActionCommand(String.valueOf(posicion));
+            matrizSelect[posicion].setActionCommand(String.valueOf(posicion + 1));
             addEventoBtnSelector(posicion);
             
             //Añadimos los Botones a sus Paneles
@@ -205,6 +210,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 JButton evento = (JButton)evt.getSource();                
                 int btnPulsado = Integer.valueOf(evento.getActionCommand());
                 incluyeSeleccion(btnPulsado);
+                activaDesactivaCheck();
             }
         });
     }    
@@ -226,10 +232,28 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         String tipoObjeto = opcModal.getTipObjeto();
         
         //Mostramos en el Panel de la Jugada el Icono Seleccionado
-        matrizJugada[filaActual][posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (btnPulsado + 1) + ".png")));
+        matrizJugada[filaActual][posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (btnPulsado) + ".png")));
+        matrizJugada[filaActual][posicion].setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/" + tipoObjeto + "_" + (btnPulsado) + ".png")));
         
         //Activamos el Boton
         matrizJugada[filaActual][posicion].setEnabled(true);
+        
+        //Si No estan Permitidos los Duplicados --> Desactivamos el Boton Pulsado
+        if (!opcModal.isDuplicados())
+            matrizSelect[btnPulsado - 1].setEnabled(false);
+    }
+    private void activaDesactivaCheck(){
+        
+        int longitud = opcModal.getLongitud();
+        
+        for (int x=0; x<longitud; x++){
+            if (numerosSeleccionados[x]==-1){
+                jBCheck.setEnabled(false);
+                return;
+            }
+        }
+        //Si Estan todos seleccionados Entonces Activamos el Check
+        jBCheck.setEnabled(true);
     }
     
     
@@ -291,11 +315,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 JButton evento = (JButton)evt.getSource();                
                 int btnPulsado = Integer.valueOf(evento.getActionCommand());
                 excluyeSeleccion(btnPulsado);
+                activaDesactivaCheck();
             }
         });
     }
     //Guarda y Ordena en una Matriz el Boton que hemos Pulsado
     private void excluyeSeleccion(int posicion){
+        
+        //Volvemos a Activar el Boton de la Seleccion
+        matrizSelect[numerosSeleccionados[posicion] - 1].setEnabled(true);
         
         //Reiniciamos la Posicion Marcada
         numerosSeleccionados[posicion]=-1;
@@ -305,7 +333,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     }
     private void unsetIconoSeleccionado(int posicion){
         //Mostramos en el Panel de la Jugada el Icono Seleccionado
-        matrizJugada[filaActual][posicion].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
+        matrizJugada[filaActual][posicion].setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
         matrizJugada[filaActual][posicion].setEnabled(false);
     }
     
@@ -337,7 +365,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 //Nuevo Label
                 matrizResult [filas][colum] = new JLabel();
                 matrizResult [filas][colum].setBounds(posResultX, posResultY, ANCHO_RES, ALTO_RES);
-                matrizResult [filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/check_verde.png")));
+                matrizResult [filas][colum].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Regular.png")));
+                matrizResult [filas][colum].setEnabled(false);
 
                 //Añadimos los Botones a sus Paneles
                 jPanelResult.add(matrizResult[filas][colum]);
@@ -381,7 +410,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         this.repaint();
     }
     private int calculaAnchoVentana(){
-        int longitud = opcModal.getLongitud();   
+        int longitud = opcModal.getLongitud();
         return ANCHO_VENTANA + calculaAnchoPanelJugada(longitud) + calculaAnchoPanelResultado(longitud);
     }
     private int calculaAnchoPanelJugada(int longitud){
@@ -410,7 +439,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jPanelSolucion = new javax.swing.JPanel();
         jBNuevaPartida = new javax.swing.JButton();
         jBOpciones = new javax.swing.JButton();
-        jBNuevaPartida1 = new javax.swing.JButton();
+        jBCheck = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -474,10 +503,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         });
 
-        jBNuevaPartida1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Nueva_Partida.png"))); // NOI18N
-        jBNuevaPartida1.addActionListener(new java.awt.event.ActionListener() {
+        jBCheck.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/check2.png"))); // NOI18N
+        jBCheck.setEnabled(false);
+        jBCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBNuevaPartida1ActionPerformed(evt);
+                jBCheckActionPerformed(evt);
             }
         });
 
@@ -488,7 +518,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             .addGroup(jPanelSolucionLayout.createSequentialGroup()
                 .addComponent(jBNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBNuevaPartida1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jBCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
                 .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -496,7 +526,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             jPanelSolucionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jBNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(jBNuevaPartida1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jBCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jLabel1.setText("Tiempo:");
@@ -574,27 +604,163 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
     private void jBNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartidaActionPerformed
 
-        //Generamos una nueva secuencia de Numeros Aleatorios
-        generaNumerosAleatorios();
+        //Si Pinchamos en Iniciar
+        if (btnIniciar == true){
+            //Ponemos a False
+            btnIniciar = false;
 
-        //Generamos el Panel Selector con el Tipo de Objeto Seleccionado
-        generaPanelSelector();
+            //Activa los Botones del Panel Selector
+            setEnabledPanelSelector(true);
+            
+            //Marcamos la Fila en la que Jugamos
+            seleccionaFilaDeJuego();
 
-        //Generamos el Panel del Jugador
-        generaPanelJugada();
+            //Iniciamos el Cronometro
+            //cronometro = new Timer();
+            //http://programacion.net/articulo/swing_y_jfc_java_foundation_classes_94/85
+            
+            //Cambiamos el Icono a Reiniciar Partida
+            jBNuevaPartida.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Restart.png")));
+        }
+        //Si Pinchamos en Reiniciar
+        else{
+            jBCheck.setEnabled(false);
+            
+            //Cambiamos el Icono a Reiniciar Partida
+            jBNuevaPartida.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Nueva_Partida.png")));
+            
+            //Generamos una nueva secuencia de Numeros Aleatorios
+            generaNumerosAleatorios();
 
-        //Generamos el Panel del Resultado
-        generaPanelResultado();
-        
-        //Iniciamos el Cronometro
-        cronometro = new Timer();
-        //http://programacion.net/articulo/swing_y_jfc_java_foundation_classes_94/85
+            //Generamos el Panel Selector con el Tipo de Objeto Seleccionado
+            generaPanelSelector();
+            
+            //Activa los Botones del Panel Selector
+            setEnabledPanelSelector(false);
+
+            //Generamos el Panel del Jugador
+            generaPanelJugada();
+
+            //Generamos el Panel del Resultado
+            generaPanelResultado();
+            
+            //Iniciamos el Numero de Fila
+            filaActual = 0;
+            
+            //Ponemos a True
+            btnIniciar = true;
+        }
     }//GEN-LAST:event_jBNuevaPartidaActionPerformed
 
-    private void jBNuevaPartida1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartida1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jBNuevaPartida1ActionPerformed
+    private void setEnabledPanelSelector(boolean activo){
+        
+        int numObjetos = opcModal.getNumObjetos();
+        
+        for (int posicion = 0; posicion < numObjetos; posicion++) {
+            matrizSelect[posicion].setEnabled(activo);
+        }
+    }
+    //Pone en Azul los botones de Interrogacion
+    //para saber que es la fila en la que va a jugar
+    private void seleccionaFilaDeJuego(){
+        
+        int longitud = opcModal.getLongitud();
 
+        //Ponemos visibles los Botones de la Barra Actual de Juego
+        for (int posicion=0; posicion<longitud; posicion++){
+            matrizJugada[filaActual][posicion].setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Question.png")));
+        }
+    }
+    
+    private void jBCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCheckActionPerformed
+        
+        int longitud = opcModal.getLongitud();
+        int verdes  = 0;
+        int blancos = 0;
+
+        //filaActual        
+        for (int posSelecc=0; posSelecc < longitud; posSelecc++){
+            for (int posSoluc=0; posSoluc < longitud; posSoluc++){
+                if (numerosSeleccionados[posSelecc]==numerosGenerados[posSoluc]){
+                    if (posSelecc == posSoluc)
+                        verdes++;
+                    else
+                        blancos++;
+                }
+            }
+        }
+        //Mostramos el Resultado
+        reflejaResultado(verdes, blancos);
+        
+        //Desactivamos el Check
+        jBCheck.setEnabled(false);
+    }//GEN-LAST:event_jBCheckActionPerformed
+    private void reflejaResultado(int verdes, int blancos){
+        
+        int longitud = opcModal.getLongitud();
+        
+        for (int pos=0; pos < longitud; pos++){
+            if (pos < verdes){
+                matrizResult[filaActual][pos].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/check_verde.png")));
+                matrizResult[filaActual][pos].setEnabled(true);
+            }
+            else if (pos < (verdes + blancos)){
+                matrizResult[filaActual][pos].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Regular.png")));
+                matrizResult[filaActual][pos].setEnabled(true);
+            }
+            else
+                matrizResult[filaActual][pos].setIcon(null);
+        }
+        
+       //Si las ha acertado todas --> Partida ganada
+        if (verdes == longitud){
+            System.out.println("Partida Ganada");
+        }
+        //Si no las ha acertado todas
+        else{         
+            System.out.println("Resultado: Hay " + verdes + " verdes y " + blancos + " Blancos");
+        
+            //Si No esta en la Ultima Fila
+            if (filaActual < (NUM_FILAS - 1)){
+                //Pasamos a la Siguiente Fila
+                siguienteFila();                
+            }
+            //Si Esta en la Ultima Fila
+            else{
+                System.out.println("!Ohh, ha perdido - Fin de la Partida");
+            }
+        }
+        
+    }
+    private void siguienteFila(){
+
+        //Obtenemos la Longitud
+        int longitud = opcModal.getLongitud();
+        int numObjet = opcModal.getNumObjetos();
+
+        //Reiniciar el Array Seleccionado
+        reiniciaArraySeleccionados(longitud);
+        
+        //Activamos todos los Botones del Panel Selector
+        for (int posicion = 0; posicion < numObjet; posicion++) {
+            matrizSelect[posicion].setEnabled(true);
+        }
+        
+        //Desactivamos la Fila Anterior
+        desactivaFilaAnterior(filaActual, longitud);
+                
+        //Incrementamos el Numero de Fila
+        filaActual++;
+        
+        //Seleccionamos la Nueva Fila de Juego
+        seleccionaFilaDeJuego();
+    }
+    private void desactivaFilaAnterior(int numFila, int longitud){
+        for (int x=0; x<longitud; x++){
+            matrizJugada[numFila][x].setEnabled(false);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -634,8 +800,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBCheck;
     private javax.swing.JButton jBNuevaPartida;
-    private javax.swing.JButton jBNuevaPartida1;
     private javax.swing.JButton jBOpciones;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
