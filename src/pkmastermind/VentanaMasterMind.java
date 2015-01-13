@@ -588,7 +588,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         
         //Iniciamos el Cronometro
         cronometro = new Timer();
-        cronometro.
+        //http://programacion.net/articulo/swing_y_jfc_java_foundation_classes_94/85
     }//GEN-LAST:event_jBNuevaPartidaActionPerformed
 
     private void jBNuevaPartida1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartida1ActionPerformed
