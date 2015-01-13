@@ -18,6 +18,7 @@ public class VentanaOpciones extends javax.swing.JDialog {
     private static final String OBJT_NUMER = "numero";
     
     //
+    private int     nivel      = 1;
     private boolean automatico = true;
     private boolean duplicados = false;
     private int     longitud   = 3;
@@ -25,6 +26,20 @@ public class VentanaOpciones extends javax.swing.JDialog {
     private String  tipObjeto  = OBJT_GATO;
     private String  tipObjAux  = OBJT_GATO;
     private boolean indCambios = false;
+    
+    public void incrementaNivel(){
+        
+        //Incrementamos el Nivel
+        if (nivel < 6)
+            nivel ++;        
+        if (numObjetos < 10)
+            numObjetos++;        
+        if (longitud < 8)
+            longitud++;
+
+        jCBLongitud.setSelectedIndex(longitud - 3);
+        jCBObjetos.setSelectedIndex(numObjetos - 6);
+    }
 
     public VentanaOpciones(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
