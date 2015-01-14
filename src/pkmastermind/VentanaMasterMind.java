@@ -56,7 +56,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     public int minutos  = 0;
     public int horas    = 0;
     
-    //Creamos el objeto Timer
+    //Creamos el objeto Timer (gracias a la ayuda de Anabel Coronel)
     javax.swing.Timer t = new javax.swing.Timer(ONE_SECOND, new ActionListener(){
         public void actionPerformed(ActionEvent ae) {
             segundos++;
