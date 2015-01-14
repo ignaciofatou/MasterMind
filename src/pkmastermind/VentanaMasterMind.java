@@ -5,6 +5,7 @@
  */
 package pkmastermind;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,17 +28,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     int[] numerosSeleccionados;
     int   seleccion  = 0;
     int   filaActual = 0;
-    
-    //PARA GUARDAR EL TAMAÑO INICIAL Y POSICION DE LOS PANELES
-    private int altoPanelSelector;
-    private int anchoPanelSelector;
-    private int altoPanelJugada;
-    private int anchoPanelJugada;
-    private int altoPanelResult;
-    private int anchoPanelResult;
-    private int anchoPanelSolucion;
-    private int PosX_Result;
-    private int PosY_Result;
     private boolean btnIniciar = true;
     
     ///
@@ -45,16 +35,19 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     JButton matrizJugada [][];
     JLabel  matrizResult [][];
     
-    final int ANCHO_VENTANA = 95;
-    final int ALTO_VENTANA  = 530;
-    final int NUM_FILAS   = 10;
-    final int ANCHO_BTN   = 35;
-    final int ALTO_BTN    = 35;
-    final int MARGEN_BTN  = 5;
-    final int ANCHO_RES   = 17;
-    final int ALTO_RES    = 17;
-    final int MARGEN_RES  = 1;
-    final int MIN_OBJETOS = 6;
+    final int ANCHO_VENTANA  = 95;
+    final int ALTO_VENTANA   = 530;
+    final int ANCHO_SELECTOR = 48;
+    final int ALTO_JUGADA    = 408;    
+    final int ANCHO_BTN      = 35;
+    final int ALTO_BTN       = 35;
+    final int MARGEN_BTN     = 5;
+    final int ANCHO_RES      = 17;
+    final int ALTO_RES       = 17;
+    final int MARGEN_RES     = 1;
+    final int NUM_FILAS      = 10;
+    final int MIN_OBJETOS    = 6;    
+
     
     public VentanaMasterMind() {
         
@@ -64,15 +57,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Centramos la ventana
         setLocationRelativeTo(null);
         
+        //Ponemos el Layout (Diseño) a Nulo
+        this.setLayout(null);
+        
         //Establecemos el Tamaño de la Ventana
         changeSizeVentana();
         
         //Generamos una nueva secuencia de Numeros Aleatorios
         generaNumerosAleatorios();
-        
-        //Guardamos el Tamaño Inicial de los Paneles (Solo se ejecuta una vez)
-        saveSizePosIniPanels();
-        
+
         //Generamos el Panel Selector con Iconos de Gatos
         generaPanelSelector();
         
@@ -82,8 +75,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Generamos el Panel del Resultado
         generaPanelResultado();
     }
-    
-
 
     //Generamos una nueva secuencia de Numeros Aleatorios
     private void generaNumerosAleatorios()
@@ -143,21 +134,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 return true;
         }
         return false;
-    }
-    
-    //Guardamos el Tamaño Inicial de los Paneles (Solo se ejecuta una vez)
-    private void saveSizePosIniPanels(){
-        //Guardamos el Tamaño Inicial del Panel
-        altoPanelSelector  = jPanelSelector.getHeight();
-        anchoPanelSelector = jPanelSelector.getWidth();
-        altoPanelJugada    = jPanelJugada.getHeight();
-        anchoPanelJugada   = jPanelJugada.getWidth();
-        altoPanelResult    = jPanelResult.getHeight();
-        anchoPanelResult   = jPanelResult.getWidth();
-        anchoPanelSolucion = jPanelSolucion.getWidth();
-        PosX_Result        = jPanelResult.getX();
-        PosY_Result        = jPanelResult.getY();
-    }   
+    } 
 
     //Genera el Panel Selector
     //Añade Dinamicamente los Botones + Cambia el Tamaño del Panel (Alto)
@@ -196,7 +173,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             posBotonesY = posBotonesY + ANCHO_BTN + MARGEN_BTN;
         }        
         //Cambiamos el Alto del Panel Selector
-        jPanelSelector.setSize(anchoPanelSelector, posBotonesY + 2);
+        jPanelSelector.setSize(ANCHO_SELECTOR, posBotonesY + 2);
         
         //Refrescamos el Panel
         jPanelSelector.repaint();
@@ -302,7 +279,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             posBotonesY = posBotonesY + ALTO_BTN + MARGEN_BTN;
         }
         //Cambiamos el Ancho del Panel de Juego        
-        jPanelJugada.setSize(calculaAnchoPanelJugada(longitud), altoPanelJugada);
+        jPanelJugada.setSize(calculaAnchoPanelJugada(longitud), ALTO_JUGADA);
+        System.out.println("Tamaño Panel Jugada: " + calculaAnchoPanelJugada(longitud));
 
         //Refrescamos el Panel
         jPanelJugada.repaint();
@@ -395,8 +373,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jPanelResult.setLocation(posicionX, jPanelResult.getY());
         
         //Establecemos el Nuevo Tamaño
-        jPanelResult.setSize(calculaAnchoPanelResultado(longitud), altoPanelResult);
-        jPanelSolucion.setSize(calculaAnchoIncognita(), jPanelSolucion.getHeight());
+        jPanelResult.setSize(calculaAnchoPanelResultado(longitud), ALTO_JUGADA);
 
         //Refrescamos el Panel
         jPanelResult.repaint();
@@ -404,9 +381,8 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     
     private void changeSizeVentana(){
         int altoVentana  = ALTO_VENTANA;
-        int anchoVentana = calculaAnchoVentana(); //jPanelResult.getWidth() + jPanelResult.getX() + MARGEN_BTN + 20;
-        System.out.println("Ancho: " + anchoVentana);
-        this.setSize(new Dimension(anchoVentana,altoVentana));        
+        int anchoVentana = calculaAnchoVentana();
+        this.setSize(new Dimension(anchoVentana, altoVentana));        
         this.repaint();
     }
     private int calculaAnchoVentana(){
@@ -440,6 +416,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jBNuevaPartida = new javax.swing.JButton();
         jBOpciones = new javax.swing.JButton();
         jBCheck = new javax.swing.JButton();
+        jBHistory = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -467,7 +444,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jPanelJugada.setLayout(jPanelJugadaLayout);
         jPanelJugadaLayout.setHorizontalGroup(
             jPanelJugadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 121, Short.MAX_VALUE)
+            .addGap(0, 124, Short.MAX_VALUE)
         );
         jPanelJugadaLayout.setVerticalGroup(
             jPanelJugadaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -511,22 +488,34 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         });
 
+        jBHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/History.png"))); // NOI18N
+        jBHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBHistoryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelSolucionLayout = new javax.swing.GroupLayout(jPanelSolucion);
         jPanelSolucion.setLayout(jPanelSolucionLayout);
         jPanelSolucionLayout.setHorizontalGroup(
             jPanelSolucionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelSolucionLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jBNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
-                .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanelSolucionLayout.setVerticalGroup(
             jPanelSolucionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jBNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(jBCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jBHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jLabel1.setText("Tiempo:");
@@ -540,20 +529,20 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(6, 6, 6)
-                                .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(6, 6, 6)
-                                .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanelSolucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)))
+                        .addComponent(jLabel2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanelSolucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)
+                                .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)
+                                .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -570,7 +559,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                     .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         pack();
@@ -599,6 +588,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             
             //Calculamos el Nuevo Tamaño de la Ventana
             changeSizeVentana();
+            
+            //Restablecemos las Opciones
+            jBCheck.setEnabled(false);
+            
+            //Cambiamos el Icono a Reiniciar Partida
+            jBNuevaPartida.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Nueva_Partida.png")));
+            
+            //Ponemos a True
+            btnIniciar = true;
         }
     }//GEN-LAST:event_jBOpcionesActionPerformed
 
@@ -608,10 +606,16 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         if (btnIniciar == true){
             //Ponemos a False
             btnIniciar = false;
+            
+            //Iniciamos el Numero de Fila
+            filaActual = 0;
+            
+            //Desactivamos el Check
+            jBCheck.setEnabled(false);
 
             //Activa los Botones del Panel Selector
             setEnabledPanelSelector(true);
-            
+
             //Marcamos la Fila en la que Jugamos
             seleccionaFilaDeJuego();
 
@@ -624,6 +628,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         }
         //Si Pinchamos en Reiniciar
         else{
+            //Desactivamos el Check
             jBCheck.setEnabled(false);
             
             //Cambiamos el Icono a Reiniciar Partida
@@ -695,10 +700,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Desactivamos el Check
         jBCheck.setEnabled(false);
     }//GEN-LAST:event_jBCheckActionPerformed
+
+    private void jBHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBHistoryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBHistoryActionPerformed
     private void reflejaResultado(int verdes, int blancos){
         
         int longitud = opcModal.getLongitud();
         
+        //Refleja los que hemos acertado en el Panel de Solucion
         for (int pos=0; pos < longitud; pos++){
             if (pos < verdes){
                 matrizResult[filaActual][pos].setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/check_verde.png")));
@@ -712,14 +722,18 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 matrizResult[filaActual][pos].setIcon(null);
         }
         
-       //Si las ha acertado todas --> Partida ganada
+        //Si las ha acertado todas --> Partida ganada
         if (verdes == longitud){
             System.out.println("Partida Ganada");
+            
+            //Desactivamos la Fila Anterior
+            desactivaFila(filaActual, longitud);
+            
+            //Marcamos los bordes en Verde
+            coloreaFila(filaActual, longitud, Color.GREEN);
         }
         //Si no las ha acertado todas
-        else{         
-            System.out.println("Resultado: Hay " + verdes + " verdes y " + blancos + " Blancos");
-        
+        else{
             //Si No esta en la Ultima Fila
             if (filaActual < (NUM_FILAS - 1)){
                 //Pasamos a la Siguiente Fila
@@ -728,9 +742,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Si Esta en la Ultima Fila
             else{
                 System.out.println("!Ohh, ha perdido - Fin de la Partida");
+                coloreaFila(filaActual, longitud, Color.RED);
             }
-        }
-        
+        }        
     }
     private void siguienteFila(){
 
@@ -747,7 +761,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         }
         
         //Desactivamos la Fila Anterior
-        desactivaFilaAnterior(filaActual, longitud);
+        desactivaFila(filaActual, longitud);
                 
         //Incrementamos el Numero de Fila
         filaActual++;
@@ -755,9 +769,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Seleccionamos la Nueva Fila de Juego
         seleccionaFilaDeJuego();
     }
-    private void desactivaFilaAnterior(int numFila, int longitud){
+    private void desactivaFila(int numFila, int longitud){
         for (int x=0; x<longitud; x++){
             matrizJugada[numFila][x].setEnabled(false);
+        }
+    }
+    private void coloreaFila(int numFila, int longitud, Color color){
+        for (int x=0; x<longitud; x++){            
+            //matrizJugada[numFila][x].setBackground(color);
+            matrizJugada[numFila][x].setForeground(color);
         }
     }
     
@@ -801,6 +821,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBCheck;
+    private javax.swing.JButton jBHistory;
     private javax.swing.JButton jBNuevaPartida;
     private javax.swing.JButton jBOpciones;
     private javax.swing.JLabel jLabel1;
