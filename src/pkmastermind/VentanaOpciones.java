@@ -404,16 +404,25 @@ public class VentanaOpciones extends javax.swing.JDialog {
 
     public void incrementaNivel(){
         
-        //Incrementamos el Nivel
-        if (nivel < 6)
-            nivel ++;        
-        if (numObjetos < 10)
-            numObjetos++;        
-        if (longitud < 8)
-            longitud++;
+        //Si Esta Activo el Nivel Automatico
+        if (jChkNivAuto.isSelected()){
+            //Incrementamos el Nivel
+            if (nivel < 6)
+                nivel ++;        
+            if (numObjetos < 10)
+                numObjetos++;        
+            if (longitud < 8)
+                longitud++;
 
-        jCBLongitud.setSelectedIndex(longitud - 3);
-        jCBObjetos.setSelectedIndex(numObjetos - 6);
+            jCBLongitud.setSelectedIndex(longitud - 3);
+            jCBObjetos.setSelectedIndex(numObjetos - 6);
+        }
+    }
+    public int getNivel(){
+        if (jChkNivAuto.isSelected())
+            return this.nivel;
+        else
+            return 0;
     }
     
     /**

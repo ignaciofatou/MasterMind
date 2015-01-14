@@ -5,14 +5,15 @@
  */
 package pkmastermind;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.util.Timer;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,7 +22,8 @@ import java.util.Timer;
 public class VentanaMasterMind extends javax.swing.JFrame {
 
     //Declaramos la Ventana Modal
-    VentanaOpciones opcModal = new VentanaOpciones(this, true);
+    VentanaOpciones  opcModal  = new VentanaOpciones(this, true);
+    VentanaHistorial histModal = new VentanaHistorial(this, true);
     Timer cronometro;
     
     int[] numerosGenerados;
@@ -36,7 +38,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     JLabel  matrizResult [][];
     
     final int ANCHO_VENTANA  = 95;
-    final int ALTO_VENTANA   = 528;
+    final int ALTO_VENTANA   = 532;
     final int ANCHO_SELECTOR = 48;
     final int ALTO_JUGADA    = 408;    
     final int ANCHO_BTN      = 35;
@@ -46,7 +48,34 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     final int ALTO_RES       = 17;
     final int MARGEN_RES     = 1;
     final int NUM_FILAS      = 10;
-    final int MIN_OBJETOS    = 6;    
+    final int MIN_OBJETOS    = 6;
+    final int MAX_PUNTUACION = 10000;
+    
+    public final static int ONE_SECOND = 1000;
+    public int segundos = 0;
+    public int minutos  = 0;
+    public int horas    = 0;
+    
+    //Creamos el objeto Timer
+    javax.swing.Timer t = new javax.swing.Timer(ONE_SECOND, new ActionListener(){
+        public void actionPerformed(ActionEvent ae) {
+            segundos++;
+            
+            if (segundos == 60){
+                minutos++;
+                segundos = 0;
+            }
+            if (minutos == 60){
+                horas++;
+                minutos = 0;
+            }
+            //Mostramos las Horas, Minutos y Segundos
+            DecimalFormat formato = new DecimalFormat("00");
+            jLTiempo.setText(formato.format(horas) + ":"
+                    + formato.format(minutos) + ":"
+                    + formato.format(segundos));
+        }
+    });
 
     
     public VentanaMasterMind() {
@@ -93,6 +122,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         
         //Inicializamos Matriz para los Numeros Que vamos a Seleccionar (*)
         reiniciaArraySeleccionados(longitud);
+        System.out.print("Solucion: ");
         
         //Generamos los Numeros Aleatorios Definidos en 'numFilas'
         while (contador < longitud){
@@ -102,17 +132,16 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Si Estan Permitidos los Duplicados
             if (duplicados){     
                 numerosGenerados[contador]=numAleatorio;
-                System.out.print(""+numAleatorio+"-");
+                System.out.print(numAleatorio + ",");
                 contador++;                
             }
             //Si no Estan Permitidos los Duplicados
             else if (!estaRepetido(numAleatorio)){  
                 numerosGenerados[contador]=numAleatorio;
-                System.out.print(""+numAleatorio+"-");
+                System.out.print(numAleatorio + ",");
                 contador++;
             }
         }
-        System.out.println();
     }
     
     //Reinicia la fila que hemos seleccionado
@@ -280,7 +309,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         }
         //Cambiamos el Ancho del Panel de Juego        
         jPanelJugada.setSize(calculaAnchoPanelJugada(longitud), ALTO_JUGADA);
-        System.out.println("Tamaño Panel Jugada: " + calculaAnchoPanelJugada(longitud));
 
         //Refrescamos el Panel
         jPanelJugada.repaint();
@@ -396,9 +424,6 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         int columRes = (longitud + 1) / 2;
         return ((MARGEN_BTN + 1) + (columRes * (ANCHO_RES + MARGEN_RES)) + (MARGEN_BTN + 1) + 1);
     }
-    private int calculaAnchoIncognita(){
-        return calculaAnchoVentana() - 35;
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -413,11 +438,14 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         jPanelJugada = new javax.swing.JPanel();
         jPanelResult = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jLTiempo = new javax.swing.JLabel();
         jBOpciones = new javax.swing.JButton();
         jBHistory = new javax.swing.JButton();
         jBCheck = new javax.swing.JButton();
         jBNuevaPartida = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLIntentos = new javax.swing.JLabel();
+        jLNivel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MasterMind");
@@ -465,7 +493,7 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
         jLabel1.setText("Tiempo:");
 
-        jLabel2.setText("00:00:00");
+        jLTiempo.setText("00:00:00");
 
         jBOpciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Option.png"))); // NOI18N
         jBOpciones.addActionListener(new java.awt.event.ActionListener() {
@@ -496,6 +524,12 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Intentos:");
+
+        jLIntentos.setText("0");
+
+        jLNivel.setText("Nivel: 1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -504,17 +538,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(6, 6, 6)
-                                .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(6, 6, 6)
-                                .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2))))
+                        .addComponent(jPanelSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)
+                        .addComponent(jPanelJugada, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)
+                        .addComponent(jPanelResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jBNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -523,17 +551,31 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(251, Short.MAX_VALUE))
+                        .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLTiempo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLIntentos, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLNivel)))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addGap(5, 5, 5)
+                    .addComponent(jLTiempo)
+                    .addComponent(jLabel3)
+                    .addComponent(jLIntentos)
+                    .addComponent(jLNivel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -580,6 +622,13 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Cambiamos el Icono a Reiniciar Partida
             jBNuevaPartida.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Nueva_Partida.png")));
             
+            //Indicamos el Nivel Actual
+            if (opcModal.getNivel() != 0) {
+                jLNivel.setText("Nivel: " + opcModal.getNivel());
+            } else {
+                jLNivel.setText("");
+            }
+        
             //Ponemos a True
             btnIniciar = true;
         }
@@ -587,6 +636,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
     private void jBNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevaPartidaActionPerformed
 
+        //Indicamos el Nivel Actual
+        if (opcModal.getNivel() != 0)
+            jLNivel.setText("Nivel: " + opcModal.getNivel());
+        else
+            jLNivel.setText("");
+            
+        //Reiniciamos el Cronometro
+        reiniciaCronometro();
+        
         //Si Pinchamos en Iniciar
         if (btnIniciar == true){
             //Ponemos a False
@@ -603,13 +661,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
 
             //Marcamos la Fila en la que Jugamos
             seleccionaFilaDeJuego();
-
-            //Iniciamos el Cronometro
-            //cronometro = new Timer();
-            //http://programacion.net/articulo/swing_y_jfc_java_foundation_classes_94/85
+            
+            //Indicamos que se ha Iniciado la Partida en el Historial
+            histModal.iniciarPartida(opcModal.getNivel());
             
             //Cambiamos el Icono a Reiniciar Partida
             jBNuevaPartida.setIcon(new javax.swing.ImageIcon(getClass().getResource("../Imagenes/Restart.png")));
+            
+            //Iniciamos el Cronometro
+            t.start();
         }
         //Si Pinchamos en Reiniciar
         else{
@@ -622,6 +682,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Generamos una nueva secuencia de Numeros Aleatorios
             generaNumerosAleatorios();
 
+            //Establecemos el Tamaño de la Ventana
+            changeSizeVentana();
+        
             //Generamos el Panel Selector con el Tipo de Objeto Seleccionado
             generaPanelSelector();
             
@@ -634,14 +697,27 @@ public class VentanaMasterMind extends javax.swing.JFrame {
             //Generamos el Panel del Resultado
             generaPanelResultado();
             
+            //Indicamos que se ha Iniciado la Partida en el Historial
+            histModal.limpiarHistorial();
+            
             //Iniciamos el Numero de Fila
             filaActual = 0;
+            
+            jLIntentos.setText("" + filaActual);
             
             //Ponemos a True
             btnIniciar = true;
         }
     }//GEN-LAST:event_jBNuevaPartidaActionPerformed
-
+    private void reiniciaCronometro(){
+        t.stop();               
+        segundos = 0;
+        minutos  = 0;
+        horas    = 0;
+        jLTiempo.setText("00:00:00");
+    }
+    
+    
     private void setEnabledPanelSelector(boolean activo){
         
         int numObjetos = opcModal.getNumObjetos();
@@ -679,6 +755,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 }
             }
         }
+        //Incluimos la Jugada en el Historial
+        histModal.incluirNuevaJugada(numerosSeleccionados, longitud, verdes, blancos);
+
         //Mostramos el Resultado
         reflejaResultado(verdes, blancos);
         
@@ -687,7 +766,9 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     }//GEN-LAST:event_jBCheckActionPerformed
 
     private void jBHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBHistoryActionPerformed
-        // TODO add your handling code here:
+
+        //Abrimos la Ventana Historica en Modo Modal
+        histModal.setVisible(true);
     }//GEN-LAST:event_jBHistoryActionPerformed
     private void reflejaResultado(int verdes, int blancos){
         
@@ -709,13 +790,29 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         
         //Si las ha acertado todas --> Partida ganada
         if (verdes == longitud){
-            System.out.println("Partida Ganada");
+            //Paramos el Cronometro
+            t.stop();
             
             //Desactivamos la Fila Anterior
             desactivaFila(filaActual, longitud);
+          
+            //Mostramos las Horas, Minutos y Segundos
+            DecimalFormat formato = new DecimalFormat("00");
+
+            //Indicamos en el Historial que se gano la partida
+            histModal.ganoPartida(formato.format(horas) + ":"
+                    + formato.format(minutos) + ":"
+                    + formato.format(segundos), getPuntuacion());
+
+            //Mostramos un Mensaje de Felicitacion
+            JOptionPane.showMessageDialog(
+                    this,
+                    "!!Bien, ha ganado!! - Ha obtenido " + getPuntuacion() + " puntos",
+                    "Ha ganado",
+                    JOptionPane.INFORMATION_MESSAGE);
             
-            //Marcamos los bordes en Verde
-            coloreaFila(filaActual, longitud, Color.GREEN);
+            //Incrementamos el Nivel
+            incrementaNivel();
         }
         //Si no las ha acertado todas
         else{
@@ -724,12 +821,41 @@ public class VentanaMasterMind extends javax.swing.JFrame {
                 //Pasamos a la Siguiente Fila
                 siguienteFila();                
             }
-            //Si Esta en la Ultima Fila
+            //Si Esta en la Ultima Fila --> Las ha fallado todas
             else{
-                System.out.println("!Ohh, ha perdido - Fin de la Partida");
-                coloreaFila(filaActual, longitud, Color.RED);
+                //Paramos el Cronometro
+                t.stop();
+
+                //Mostramos las Horas, Minutos y Segundos
+                DecimalFormat formato = new DecimalFormat("00");
+
+                //Indicamos en el Historial que se perdio la partida
+                histModal.perdioPartida(formato.format(horas) + ":"
+                        + formato.format(minutos) + ":"
+                        + formato.format(segundos));
+                
+                //Mostramos un Mensaje de Partida Perdida
+                JOptionPane.showMessageDialog(
+                        this,
+                        "!!Ohh, ha perdido!! - Fin de la partida",
+                        "Ha perdido",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }        
+    }
+    private void incrementaNivel(){
+        //Incrementamos el Nivel
+        opcModal.incrementaNivel();
+    }    
+    
+    //Calcula la Puntuacion Obtenida
+    private int getPuntuacion(){
+        int segundosTotales = (horas * 3600) + (minutos * 60) + segundos;
+        
+        //Calculamos la Puntuacion
+        int puntIntentos = MAX_PUNTUACION / (filaActual + 1);
+        int puntTiempo   = (MAX_PUNTUACION / (segundosTotales)) * 5;
+        return puntIntentos + puntTiempo;
     }
     private void siguienteFila(){
 
@@ -751,18 +877,15 @@ public class VentanaMasterMind extends javax.swing.JFrame {
         //Incrementamos el Numero de Fila
         filaActual++;
         
+        //Incrementamos en Numero de Intentos
+        jLIntentos.setText("" + filaActual);
+        
         //Seleccionamos la Nueva Fila de Juego
         seleccionaFilaDeJuego();
     }
     private void desactivaFila(int numFila, int longitud){
         for (int x=0; x<longitud; x++){
             matrizJugada[numFila][x].setEnabled(false);
-        }
-    }
-    private void coloreaFila(int numFila, int longitud, Color color){
-        for (int x=0; x<longitud; x++){            
-            //matrizJugada[numFila][x].setBackground(color);
-            matrizJugada[numFila][x].setForeground(color);
         }
     }
     
@@ -809,8 +932,11 @@ public class VentanaMasterMind extends javax.swing.JFrame {
     private javax.swing.JButton jBHistory;
     private javax.swing.JButton jBNuevaPartida;
     private javax.swing.JButton jBOpciones;
+    private javax.swing.JLabel jLIntentos;
+    private javax.swing.JLabel jLNivel;
+    private javax.swing.JLabel jLTiempo;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanelJugada;
     private javax.swing.JPanel jPanelResult;
     private javax.swing.JPanel jPanelSelector;
